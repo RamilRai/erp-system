@@ -194,6 +194,8 @@
                 $.post(url, data, function(response){
                     $('#loadTaskManagementModal .modal-content').html(response);
                     $('#taskManagementModalShow').css({"opacity": "1", "display": "block"});
+                    $('.modal-dialog').removeClass('modal modal-lg');
+                    $('.modal-dialog').addClass('modal-xl');
                 });
             });
             //================== view data end ==================
@@ -281,6 +283,16 @@
                                 var url = '{{route('task-management.marks')}}';
                                 var _token = '{{csrf_token()}}';
                                 var data = {_token:_token, id:id};
+                                $.post(url, data, function(response){
+                                    $('#loadTaskManagementModal .modal-content').html(response);
+                                    $('#taskManagementModalShow').css({"opacity": "1", "display": "block"});
+                                    $('.modal-dialog').removeClass('modal-lg modal-xl');
+                                    $('.modal-dialog').addClass('modal');
+                                });
+                            } else if(result.type == 'success' && result.response == 'revoke'){
+                                var url = '{{route('task-management.revoke')}}';
+                                var _token = '{{csrf_token()}}';
+                                var data = {_token:_token, id:id, value:value};
                                 $.post(url, data, function(response){
                                     $('#loadTaskManagementModal .modal-content').html(response);
                                     $('#taskManagementModalShow').css({"opacity": "1", "display": "block"});

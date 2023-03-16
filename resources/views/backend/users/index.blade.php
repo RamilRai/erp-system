@@ -50,6 +50,17 @@
                 </div>
                 <!-- Modal Open - End -->
 
+                <!-- Modal Service Type Form - Start -->
+                <div id="loadDepartmentFormModal">
+                    <div class="modal fade" tabindex="-1" aria-labelledby="departmentModalLabel" id="departmentModalShow" aria-hidden="true">
+                        <div class="modal-dialog modal" role="document">
+                            <div class="modal-content">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <!-- Modal Service Type Form - End -->
+
             </div>
         </div>
     </div>
@@ -210,6 +221,27 @@
                 });
             });
             //================== view data end ==================
+
+            //================== Open Department Model start ==================
+            $(document).on('click','#addDepartment',function(e){
+                e.preventDefault();
+                var url = '{{route('department.form')}}';
+                var _token = "{{csrf_token()}}";
+                var data={
+                    _token:_token,
+                };
+                $.post(url,data,function(response){
+                    $('#loadDepartmentFormModal .modal-content').html(response);
+                    $('#departmentModalShow').css({"opacity": "1", "display": "block"});
+                })
+            });
+            //================== Open Department Model end ==================
+
+            //================== close modal form start ==================
+            $(document).on('click', '.closeDepartment', function(){
+                $("#departmentModalShow").hide();
+            });
+            //================== close modal form end ==================
 
         });
     </script>

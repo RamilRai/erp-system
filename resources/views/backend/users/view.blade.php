@@ -48,16 +48,40 @@
                         <td>{{$result->profile->gender}}</td>
                     </tr>
                     <tr>
-                        <th scope="row">Date of Birth (BS)</th>
-                        <td>{{$result->profile->dob_bs}}</td>
-                    </tr>
-                    <tr>
-                        <th scope="row">Date of Birth (AD)</th>
-                        <td>{{$result->profile->dob_ad}}</td>
+                        <th scope="row">Date of Birth</th>
+                        <td>{{$result->profile->dob_bs}} B.S ({{$result->profile->dob_ad}} A.D)</td>
                     </tr>
                     <tr>
                         <th scope="row">Blood Group</th>
                         <td>{{$result->profile->blood_group}}</td>
+                    </tr>
+                    <tr>
+                        <th scope="row">Recruited Date</th>
+                        <td>{{$result->profile->recruited_date_bs}} B.S ({{$result->profile->recruited_date_ad}} A.D)</td>
+                    </tr>
+                    <tr>
+                        <th scope="row">Department</th>
+                        <td>{{$result->profile->departments->department_name}}</td>
+                    </tr>
+                    @php
+                        $documentsArray = json_decode($result->profile->documents);
+                    @endphp
+                    <tr>
+                        <th scope="row">Documents</th>
+                        <td>
+                            @foreach ($documentsArray as $item)
+                                @php
+                                    $fileExtention = explode('.', $item);
+                                @endphp
+                                @if ($fileExtention[1] == "pdf")
+                                    <a href="{{asset('storage/user-documents/'.$item)}}" target="_blank"><img src="{{asset('default-images/pdf.png')}}" height="50px" width="50px" alt="Documents"></a>
+                                @elseif($fileExtention[1] == "docx")
+                                    <a href="{{asset('storage/user-documents/'.$item)}}" target="_blank"><img src="{{asset('default-images/word.png')}}" height="50px" width="50px" alt="Documents"></a>
+                                @else
+                                    <a href="{{asset('storage/user-documents/'.$item)}}" target="_blank"><img src="{{asset('storage/user-documents/'.$item)}}" height="50px" width="50px" alt="Documents"></a>
+                                @endif
+                            @endforeach
+                        </td>
                     </tr>
                 </tbody>
             </table>

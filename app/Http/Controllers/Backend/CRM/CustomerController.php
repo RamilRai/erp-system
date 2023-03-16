@@ -114,13 +114,13 @@ class CustomerController extends Controller
             // insert actions icons
             $action = '';
             // for edit
-            $action .= '<a href="javascript:;" title="Edit Data" class="tooltipdiv editCustomer" style="color:blue; font-size: 20px" data-id="' . $row->id .  '"><i class="fa-solid fa-pen-to-square"></i></a>';
+            $action .= '<a href="javascript:;" title="Edit Data" class="tooltipdiv editCustomer" style="color:blue; font-size: 20px" data-id="' . $row->cust_id .  '"><i class="fa-solid fa-pen-to-square"></i></a>';
             // for delete
-            $action .= '<a href="javascript:;" title="Delete Data" class="tooltipdiv deleteCustomer px-2" style="color:red; font-size: 20px" data-id="' . $row->id .  '"><i class="fa-solid fa-trash-can"></i></a>';
+            $action .= '<a href="javascript:;" title="Delete Data" class="tooltipdiv deleteCustomer px-2" style="color:red; font-size: 20px" data-id="' . $row->cust_id .  '"><i class="fa-solid fa-trash-can"></i></a>';
             // for show
-            $action .= '<a href="javascript:;" title="View Data" class="tooltipdiv viewCustomer" style="color:green; font-size: 20px" data-id="' . $row->id .  '"><i class="fa-solid fa-eye"></i></a>';
+            $action .= '<a href="javascript:;" title="View Data" class="tooltipdiv viewCustomer" style="color:green; font-size: 20px" data-id="' . $row->cust_id .  '"><i class="fa-solid fa-eye"></i></a>';
 
-            $action .= '<a href="javascript:;" title="Call Log" class="tooltipdiv callLog ps-2" style="color:green; font-size: 18px" data-id="' . $row->id .  '"><i class="fa-solid fa-phone"></i></a>';
+            $action .= '<a href="javascript:;" title="Call Log" class="tooltipdiv callLog ps-2" style="color:green; font-size: 18px" data-id="' . $row->cust_id .  '"><i class="fa-solid fa-phone"></i></a>';
             $array[$i]["action"] = $action;
             $i++;
         }
@@ -235,6 +235,7 @@ class CustomerController extends Controller
     {
         try {
             $post = $request->only(['_token', 'customer_id', 'id', 'call_date', 'called_by', 'received_by', 'remarks']);
+            
             $this->message = $post['id'] == null ? "Information Submitted Successfully." : "Information Updated Successfully.";
 
             DB::beginTransaction();

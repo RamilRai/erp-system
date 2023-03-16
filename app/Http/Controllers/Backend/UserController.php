@@ -5,7 +5,8 @@ namespace App\Http\Controllers\Backend;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Http\Requests\UserRequest;
-use App\Models\{User, Profile, UserRole, Common};
+use App\Http\Requests\DepartmentRequest;
+use App\Models\{User, Profile, UserRole, Common, Department};
 use Illuminate\Database\QueryException;
 use App\Traits\ImageProcessTrait;
 use Exception;
@@ -40,6 +41,7 @@ class UserController extends Controller
     {
         $post = $request->all();
         $data = [];
+        $data['department'] = Department::where('status', 'Y')->get();
         if (!empty($post['id'])) {
             $data['user'] = User::where(['id'=>$post['id'], 'status'=>'Y'])->first();
         }
@@ -67,8 +69,8 @@ class UserController extends Controller
     {
         try {
             $post = $request->only(['_token', 'id', 'first_name', 'middle_name', 'last_name', 'permanent_address', 'temporary_address',
-                    'email', 'phone_number', 'username', 'profile', 'updateProfile', 'gender', 'dob_bs', 'dob_ad', 'blood_group']);
-
+                    'email', 'phone_number', 'username', 'profile', 'updateProfile', 'gender', 'dob_bs', 'dob_ad', 'blood_group', 'recruited_date_bs', 'recruited_date_ad', 'department_id', 'documents']);
+            
             $this->message = $post['id'] == null ? "User Information Submitted Successfully." : "User Information Updated Successfully.";
 
             DB::beginTransaction();
@@ -89,7 +91,30 @@ class UserController extends Controller
                 $this->uploadImage($image, $folder, $fileName);
                 $profile->profile = $fileName;
             }
-
+            if ($post['documents'][0] != null) {
+                $arrayDocuments = [];
+                foreach ($request->file('documents') as $image) {
+                    $folder = 'storage/user-documents';
+                    $fileName = $image->hashName();
+                    $fileExtension = $image->getClientOriginalExtension();
+                    if ($fileExtension == 'pdf' || $fileExtension == 'docx') {
+                        $image->move(public_path($folder), $fileName);
+                    } else {
+                        $this->uploadImage($image, $folder, $fileName);
+                    }
+                    
+                    $arrayDocuments[] = $fileName;
+                }
+                if ($post['id'] == null) {
+                    $profile->documents = json_encode($arrayDocuments);
+                } else {
+                    $fetchOldData = Profile::select('documents')->where('user_id', $post['id'])->first();
+                    $oldData = json_decode($fetchOldData->documents);
+                    $profile->documents = json_encode(array_merge($oldData, $arrayDocuments));
+                }
+                
+            }
+            
             $storeProfile = Profile::storeProfile($post, $profile);
 
             // insert into user_roles table-3
@@ -151,7 +176,7 @@ class UserController extends Controller
     {
         $post = $request->all();
         $data['result'] = User::viewUserData($post);
-
+        
         return view('backend.users.view', $data);
     }
 
@@ -174,4 +199,59 @@ class UserController extends Controller
         }
         Common::getJsonData($this->type, $this->message, $this->response);
     }
+
+    //====================================== department start ======================================
+    public function departmentLoad()
+    {
+        try {
+            $this->message = "Departments Fetched Successfully.";
+
+            $this->response = Department::select('id', 'department_name')->where('status', 'Y')->get();
+
+            if (!$this->response) {
+                throw new Exception("Error Processing Request", 1);
+            }
+
+        } catch (QueryException $e) {
+            $this->type = 'error';
+            $this->message = $this->queryExceptionMessage;
+        } catch(Exception $e){
+            $this->type = 'error';
+            $this->message = $e->getMessage();
+        }
+        Common::getJsonData($this->type, $this->message, $this->response);
+    }
+
+    public function departmentForm()
+    {
+        return view('backend.users.department');
+    }
+
+    public function departmentSubmit(DepartmentRequest $request)
+    {
+        try {
+            $post = $request->only(['_token', 'department_name']);
+            $this->message = "Department Name Submitted Successfully.";
+
+            DB::beginTransaction();
+
+            $storeDepartment = Department::storeDepartment($post);
+
+            if (!$storeDepartment) {
+                throw new Exception("Error Processing Request", 1);
+            }
+
+            DB::commit();
+        } catch (QueryException $qe) {
+            DB::rollback();
+            $this->type = 'error';
+            $this->message = $this->queryExceptionMessage;
+        } catch (Exception $e) {
+            DB::rollback();
+            $this->type = 'error';
+            $this->message = $e->getMessage();
+        }
+        Common::getJsonData($this->type, $this->message, $this->response);
+    }
+    //====================================== department end ======================================
 }

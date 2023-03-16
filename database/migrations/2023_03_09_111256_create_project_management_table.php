@@ -23,9 +23,9 @@ return new class extends Migration
             $table->string('phone_number', 100)->nullable();
             $table->string('email', 100)->nullable();
             $table->string('project_time_duration', 100)->nullable();
-            $table->date('start_date')->nullable();
+            $table->date('start_date_bs')->nullable();
             $table->date('start_date_ad')->nullable();
-            $table->date('end_date')->nullable();
+            $table->date('end_date_bs')->nullable();
             $table->date('end_date_ad')->nullable();
             $table->foreignId('project_lead_by')->constrained('users', 'id')->cascadeOnDelete()->cascadeOnUpdate();
             $table->json('assign_team_members')->nullable();

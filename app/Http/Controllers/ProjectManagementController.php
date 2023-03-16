@@ -49,7 +49,7 @@ class ProjectManagementController extends Controller
     {
         try {
             $post = $request->only(['_token', 'id', 'project_name', 'pdf', 'project_type', 'client_company_name', 'contact_person',
-                    'phone_number', 'email', 'project_time_duration', 'start_date', 'start_date_ad', 'end_date', 'end_date_ad', 'project_lead_by', 'assign_team_members', 'project_status']);
+                    'phone_number', 'email', 'project_time_duration', 'start_date_bs', 'start_date_ad', 'end_date_bs', 'end_date_ad', 'project_lead_by', 'assign_team_members', 'project_status']);
 
             $this->message = $post['id'] == null ? "Project Management Information Submitted Successfully." : "Project Management Information Updated Successfully.";
 
@@ -91,7 +91,7 @@ class ProjectManagementController extends Controller
             $array[$i]["sn"] = $i +1;
             $array[$i]["projectName"] = $row->project_name;
             $array[$i]["projectType"] = $row->project_type;
-            $array[$i]["timeDuration"] = $row->start_date . ' - ' . $row->end_date;
+            $array[$i]["timeDuration"] = $row->start_date_bs . ' - ' . $row->end_date_bs;
 
             // project leader
             $img = '<img src="'.asset('storage/users-profile/'.$row->profile).'" alt="image" style="height:2rem; width:2rem; border-radius:50%;">';
@@ -106,7 +106,7 @@ class ProjectManagementController extends Controller
             }
             $array[$i]["assignedMembers"] = $assignTeams;
 
-            $progressBar = '<div class="progress" style="background-color:#D6D6D6"><div class="progress-bar" role="progressbar" title="25%" style="width: 25%; background-color: #4B8F4B" aria-valuenow="50" aria-valuemin="0" aria-valuemax="100"></div></div>';
+            $progressBar = '<div class="progress" style="background-color:#D6D6D6"><div class="progress-bar" role="progressbar" title="55%" style="width: 55%; background-color: #4B8F4B" aria-valuenow="50" aria-valuemin="0" aria-valuemax="100"></div></div>';
             $array[$i]["workProgress"] = $progressBar;
             $status = '';
             if ($row->project_status == 'Not Started Yet'){

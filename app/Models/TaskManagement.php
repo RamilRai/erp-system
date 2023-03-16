@@ -4,6 +4,9 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use App\Models\ProjectManagement;
+use Illuminate\Support\Facades\Mail;
+use App\Mail\TaskCompletedMail;
 use Illuminate\Support\Arr;
 use Carbon\Carbon;
 use Str;
@@ -14,6 +17,11 @@ class TaskManagement extends Model
 
     protected $table = 'task_management';
 
+    public function projects()
+    {
+        return $this->belongsTo(ProjectManagement::class, 'project_id', 'id');
+    }
+
     public static function storeData($post, $taskManagement)
     {
         try {
@@ -23,9 +31,9 @@ class TaskManagement extends Model
             $taskManagement->task_title = Str::title($freshData['task_title']);
             $taskManagement->project_id = $freshData['project_id'];
             $taskManagement->task_type = $freshData['task_type'];
-            $taskManagement->task_start_date = $freshData['task_start_date'];
+            $taskManagement->task_start_date_bs = $freshData['task_start_date_bs'];
             $taskManagement->task_start_date_ad = $freshData['task_start_date_ad'];
-            $taskManagement->task_end_date = $freshData['task_end_date'];
+            $taskManagement->task_end_date_bs = $freshData['task_end_date_bs'];
             $taskManagement->task_end_date_ad = $freshData['task_end_date_ad'];
             $taskManagement->estimated_hour = $freshData['estimated_hour'];
             $taskManagement->priority = $freshData['priority'];
@@ -70,8 +78,8 @@ class TaskManagement extends Model
                         TM.task_title,
                         PM.project_name,
                         TM.task_type,
-                        TM.task_start_date,
-                        TM.task_end_date,
+                        TM.task_start_date_bs,
+                        TM.task_end_date_bs,
                         TM.estimated_hour,
                         TM.priority,
                         TM.task_status,
@@ -106,7 +114,9 @@ class TaskManagement extends Model
             $currentDateTime = Carbon::now();
             $taskManagement->task_completed_date_and_time_ad = $currentDateTime->format('Y-m-d H:i:s');
             $taskManagement->task_status = 'Completed';
+            $taskManagement->feedback = $post['feedback'];
 
+            // for completed status
             $currentDate = Carbon::parse(date('Y-m-d'));
             $toBeCompletedDate = TaskManagement::select('task_end_date_ad')->where('id', $post['id'])->first();
             $toBeCompletedDate = Carbon::parse($toBeCompletedDate->task_end_date_ad);
@@ -125,6 +135,11 @@ class TaskManagement extends Model
                 $taskManagement->completed_status = "On Time";
             }
 
+            // send mail
+            Mail::to($taskManagement->projects->profiles->email)
+                ->cc(['codelogictechnologies@gmail.com', 'hr@cltech.com.np', 'info@cltech.com.np'])
+                ->send(new TaskCompletedMail($taskManagement));
+
             $result = $taskManagement->save();
 
             if($result){
@@ -142,8 +157,31 @@ class TaskManagement extends Model
         try {
             $freshData = sanitizeData($post);
             $taskManagement = TaskManagement::where('id', $freshData['id'])->first();
+            $taskManagement->verified_by = $taskManagement->projects->project_lead_by;
+            $currentDateTime = Carbon::now();
+            $taskManagement->verified_date_ad = $currentDateTime->format('Y-m-d H:i:s');
             $taskManagement->achieved_point = $freshData['achieved_point'];
             $taskManagement->task_status = 'Verified';
+            $taskManagement->response_from_supervisor = $freshData['response_from_supervisor'];
+            $result = $taskManagement->save();
+
+            if($result){
+                return true;
+            } else {
+                return false;
+            }
+        } catch (Exception $e) {
+            throw $e;
+        }
+    }
+
+    public static function storeRemarks($post)
+    {
+        try {
+            $freshData = sanitizeData($post);
+            $taskManagement = TaskManagement::where('id', $freshData['id'])->first();
+            $taskManagement->task_status = $freshData['value'];
+            $taskManagement->feedback = $freshData['feedback'];
             $result = $taskManagement->save();
 
             if($result){

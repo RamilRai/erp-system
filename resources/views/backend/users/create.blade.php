@@ -1,3 +1,16 @@
+<style>
+    #documents {
+        display: flex;
+        flex-wrap: wrap;
+    }
+
+    #imgPreview img {
+        width: 30px;
+        height: 30px;
+        margin: 5px;
+        border: 1px solid gray;
+    }
+</style>
 <div class="modal-header">
     <h5 class="modal-title">User Info</h5>
     <a href="#" class="close" data-bs-dismiss="modal" aria-label="Close">
@@ -113,6 +126,34 @@
                     </select>
                 </div>
             </div>
+            <div class="form-group col-4">
+                <label class="form-label" for="recruited_date_bs">Recruited Date (BS) <code>*</code></label>
+                <div class="form-control-wrap">
+                    <input type="text" class="form-control" id="recruited_date_bs" name="recruited_date_bs" value="{{isset($user)?$user->profile->recruited_date_bs:''}}">
+                </div>
+                <p class="form-text text-danger recruited_date_bs"></p>
+            </div>
+            <input type="hidden" class="form-control" id="recruited_date_ad" name="recruited_date_ad" value="{{isset($user)?$user->profile->recruited_date_ad:''}}">
+            <div class="form-group col-4">
+                <label class="form-label" for="department_id">Department <code>*</code> <a href="#" id="addDepartment" class="text-primary" data-bs-toggle="modal" data-bs-target="#modalForm">Add Department</a></label>
+                <div class="form-control-wrap">
+                    <select class="form-control" name="department_id" id="department_id">
+                        <option value="" hidden>-- Select Department --</option>
+                        @foreach ($department as $d_item)
+                            <option class="projectName" value="{{$d_item->id}}" {{$d_item->id == @$user->profile->department_id ? 'selected':''}}>{{$d_item->department_name}}</option>
+                        @endforeach
+                    </select>
+                </div>
+                <p class="form-text text-danger department_id"></p>
+            </div>
+            <div class="form-group col-4">
+                <label class="form-label" for="documents">Documents <code>*</code></label>
+                <div class="form-control-wrap">
+                    <input type="file" class="form-control" id="documents" name="documents[]" multiple>
+                </div>
+                <p class="form-text text-danger documents"></p>
+                <div id="imgPreview"></div>
+            </div>
         </div>
         <div class="form-group mt-2">
             <button type="submit" class="btn btn-lg btn-primary" id="saveUserInfo"><i class="fa-solid fa-floppy-disk"></i>&nbsp;Save Informations</button>
@@ -132,6 +173,18 @@
             var dateinAD = NepaliFunctions.BS2AD(dateInBs, "YYYY-MM-DD");
             $("#dob_ad").val(dateinAD);
             $("#dob_bs").trigger('change');
+        }
+    });
+
+    $("#recruited_date_bs").nepaliDatePicker({
+        ndpYear: true,
+        ndpMonth: true,
+        language: "english",
+        onChange: function() {
+            var dateInBs = $('#recruited_date_bs').val();
+            var dateinAD = NepaliFunctions.BS2AD(dateInBs, "YYYY-MM-DD");
+            $("#recruited_date_ad").val(dateinAD);
+            $("#recruited_date_bs").trigger('change');
         }
     });
     //================== nepali date picker end ==================
@@ -165,6 +218,33 @@
         filereader.readAsDataURL(this.files[0]);
     });
     //================== preview image while uploading end ==================
+
+    //================== uploaded image preview start ==================
+    $('#documents').on('change', function() {
+        var files = $(this).prop('files');
+
+        $('#imgPreview').empty();
+        // Loop through each file and check if it is an image or pdf or word
+        for (var i = 0; i < files.length; i++) {
+            var file = files[i];
+            var fileReader = new FileReader();
+
+            if (file.type.match('image.*')) {
+                fileReader.onload = function(e) {
+                    var imagePreview = $('<img>').attr('src', e.target.result);
+                    $('#imgPreview').append(imagePreview);
+                };
+                fileReader.readAsDataURL(file);
+            } else if(file.type === "application/pdf") {
+                var fileName = $('<img>').attr('src', "{{asset('default-images/pdf.png')}}");
+                $('#imgPreview').append(fileName);
+            } else if(file.type === "application/vnd.openxmlformats-officedocument.wordprocessingml.document") {
+                var fileName = $('<img>').attr('src', "{{asset('default-images/word.png')}}");
+                $('#imgPreview').append(fileName);
+            }
+        }
+    });
+    //================== uploaded image preview end ==================
 
     //================== store data start ==================
     $("#saveUserInfo").on('click', function(e){
@@ -209,7 +289,14 @@
                     }
                 },
                 gender: 'required',
-                dob_bs: 'required'
+                dob_bs: 'required',
+                recruited_date_bs: 'required',
+                department_id: 'required',
+                "documents[]": {
+                    required: function(e){
+                        return $('#userId').val() == "";
+                    }
+                }
             },
             messages: {
                 first_name: {
@@ -251,7 +338,16 @@
                     required: "Please select gender."
                 },
                 dob_bs: {
-                    required: "Please input date of birth."
+                    required: "Please select date of birth."
+                },
+                recruited_date_bs: {
+                    required: "Please select recruited date."
+                },
+                department_id: {
+                    required: "Please select department."
+                },
+                "documents[]": {
+                    required: "Please upload atleast one file."
                 }
             }
         });
@@ -305,5 +401,20 @@
         }
     });
     //================== store data end ==================
+
+    //================== load options start ==================
+    function loadDepartment(){
+        var url = '{{route('department.load')}}';
+        $.get(url, function (response) {
+            var result = JSON.parse(response);
+            if(result.type == 'success'){
+                $('#department_id').html('');
+                $.each(result.response,function(key,items){
+                    $('#department_id').append("<option value='"+items.id+"'>"+items.department_name+"</option>")
+                });
+            }
+        });
+    } 
+    //================== load options end ==================
 
 </script>

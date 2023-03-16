@@ -70,19 +70,19 @@
                 <p class="form-text text-danger project_time_duration"></p>
             </div>
             <div class="form-group col-4">
-                <label class="form-label" for="start_date">Start Date <code>*</code></label>
+                <label class="form-label" for="start_date_bs">Start Date <code>*</code></label>
                 <div class="form-control-wrap">
-                    <input type="text" class="form-control" id="start_date" name="start_date" value="{{isset($projectManagement)?$projectManagement->start_date:''}}">
+                    <input type="text" class="form-control" id="start_date_bs" name="start_date_bs" value="{{isset($projectManagement)?$projectManagement->start_date_bs:''}}">
                 </div>
-                <p class="form-text text-danger start_date"></p>
+                <p class="form-text text-danger start_date_bs"></p>
             </div>
             <input type="hidden" id="start_date_ad" name="start_date_ad" value="{{isset($projectManagement)?$projectManagement->start_date_ad:''}}">
             <div class="form-group col-4">
-                <label class="form-label" for="end_date">End Date <code>*</code></label>
+                <label class="form-label" for="end_date_bs">End Date <code>*</code></label>
                 <div class="form-control-wrap">
-                    <input type="text" class="form-control" id="end_date" name="end_date" value="{{isset($projectManagement)?$projectManagement->end_date:''}}">
+                    <input type="text" class="form-control" id="end_date_bs" name="end_date_bs" value="{{isset($projectManagement)?$projectManagement->end_date_bs:''}}">
                 </div>
-                <p class="form-text text-danger end_date"></p>
+                <p class="form-text text-danger end_date_bs"></p>
             </div>
             <input type="hidden" id="end_date_ad" name="end_date_ad" value="{{isset($projectManagement)?$projectManagement->end_date_ad:''}}">
             <div class="form-group col-4">
@@ -149,29 +149,29 @@
     //================== hide and show client info end ==================
 
     //================== project start date start ==================
-    $("#start_date").nepaliDatePicker({
+    $("#start_date_bs").nepaliDatePicker({
         ndpYear: true,
         ndpMonth: true,
         language: "english",
         onChange: function() {
-            var dateInBs = $('#start_date').val();
+            var dateInBs = $('#start_date_bs').val();
             var dateinAD = NepaliFunctions.BS2AD(dateInBs, "YYYY-MM-DD");
             $("#start_date_ad").val(dateinAD);
-            $("#start_date").trigger('change');
+            $("#start_date_bs").trigger('change');
         }
     });
     //================== project start date end ==================
 
     //================== project end date start ==================
-    $("#end_date").nepaliDatePicker({
+    $("#end_date_bs").nepaliDatePicker({
         ndpYear: true,
         ndpMonth: true,
         language: "english",
         onChange: function() {
-            var dateInBs = $('#end_date').val();
+            var dateInBs = $('#end_date_bs').val();
             var dateinAD = NepaliFunctions.BS2AD(dateInBs, "YYYY-MM-DD");
             $("#end_date_ad").val(dateinAD);
-            $("#end_date").trigger('change');
+            $("#end_date_bs").trigger('change');
         }
     });
     //================== project end date end ==================
@@ -215,8 +215,8 @@
                     required: true,
                     maxlength: 100
                 },
-                start_date: 'required',
-                end_date: 'required',
+                start_date_bs: 'required',
+                end_date_bs: 'required',
                 project_lead_by: 'required',
                 "assign_team_members[]": 'required',
                 project_status: 'required'
@@ -250,10 +250,10 @@
                     required: "Please input project time duration.",
                     maxlength: "Please input not more than 100 characters."
                 },
-                start_date: {
+                start_date_bs: {
                     required: "Please select start date."
                 },
-                end_date: {
+                end_date_bs: {
                     required: "Please select end date."
                 },
                 project_lead_by: {

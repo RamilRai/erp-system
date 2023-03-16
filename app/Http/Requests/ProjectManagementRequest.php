@@ -25,7 +25,7 @@ class ProjectManagementRequest extends FormRequest
     public function rules(Request $request)
     {
         $post = $request->only(['_token', 'id', 'project_name', 'pdf', 'project_type', 'client_company_name', 'contact_person',
-        'phone_number', 'email', 'project_time_duration', 'start_date', 'start_date_ad', 'end_date', 'end_date_ad', 'project_lead_by', 'assign_team_members', 'project_status']);
+        'phone_number', 'email', 'project_time_duration', 'start_date_bs', 'start_date_ad', 'end_date_bs', 'end_date_ad', 'project_lead_by', 'assign_team_members', 'project_status']);
 
         $rules['project_name'] = 'required|max:100';
         $rules['project_type'] = 'required';
@@ -39,12 +39,19 @@ class ProjectManagementRequest extends FormRequest
             $rules['pdf'] = 'mimes:pdf';
         }
         $rules['project_time_duration'] = 'required|max:100';
-        $rules['start_date'] = 'required';
-        $rules['end_date'] = 'required';
+        $rules['start_date_bs'] = 'required|date';
+        $rules['end_date_bs'] = 'required|date|after:start_date_bs';
         $rules['project_lead_by'] = 'required';
         $rules['assign_team_members'] = 'required';
         $rules['project_status'] = 'required';
 
         return $rules;
+    }
+
+    public function messages()
+    {
+        return [
+            'end_date_bs.after' => "Project End date must be greater than it's start date.",
+        ];
     }
 }

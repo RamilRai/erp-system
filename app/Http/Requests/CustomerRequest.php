@@ -34,9 +34,16 @@ class CustomerRequest extends FormRequest
             'service_name' => 'required|max:100',
             'domain_name' => 'max:100',
             'company_website' => 'max:100',
-            'contracted_date' => 'required',
-            'contract_end_date' => 'required',
+            'contracted_date' => 'required|date',
+            'contract_end_date' => 'required|date|after:contracted_date',
             'contracted_by' => 'required|max:100',
+        ];
+    }
+
+    public function messages()
+    {
+        return [
+            'contract_end_date.after' => "Contract End date must be greater than it's start date.",
         ];
     }
 }

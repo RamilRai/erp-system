@@ -27,12 +27,19 @@ class TaskManagementRequest extends FormRequest
             'task_title' => 'required|max:100',
             'project_id' => 'required',
             'task_type' => 'required',
-            'task_start_date' => 'required',
-            'task_end_date' => 'required',
+            'task_start_date_bs' => 'required|date',
+            'task_end_date_bs' => 'required|date|after:task_start_date_bs',
             'estimated_hour' => 'required|max:100',
             'priority' => 'required',
             'assigned_to' => 'required',
             'task_point' => 'required'
+        ];
+    }
+
+    public function messages()
+    {
+        return [
+            'task_end_date_bs.after' => "Task End date must be greater than it's start date.",
         ];
     }
 }

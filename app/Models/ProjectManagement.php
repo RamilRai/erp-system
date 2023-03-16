@@ -35,9 +35,9 @@ class ProjectManagement extends Model
                 $projectManagement->email = $freshData['email'];
             }
             $projectManagement->project_time_duration = $freshData['project_time_duration'];
-            $projectManagement->start_date = $freshData['start_date'];
+            $projectManagement->start_date_bs = $freshData['start_date_bs'];
             $projectManagement->start_date_ad = $freshData['start_date_ad'];
-            $projectManagement->end_date = $freshData['end_date'];
+            $projectManagement->end_date_bs = $freshData['end_date_bs'];
             $projectManagement->end_date_ad = $freshData['end_date_ad'];
             $projectManagement->project_lead_by = $freshData['project_lead_by'];
             $projectManagement->project_status = $freshData['project_status'];
@@ -80,8 +80,8 @@ class ProjectManagement extends Model
                         PM.id,
                         PM.project_name,
                         PM.project_type,
-                        PM.start_date,
-                        PM.end_date,
+                        PM.start_date_bs,
+                        PM.end_date_bs,
                         PM.assign_team_members,
                         PM.project_status,
                         P.profile,

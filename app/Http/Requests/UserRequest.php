@@ -25,9 +25,9 @@ class UserRequest extends FormRequest
     public function rules(Request $request)
     {
         $post = $request->only(['id', 'first_name', 'last_name', 'permanent_address', 'temporary_address',
-                                'email', 'phone_number', 'username', 'profile', 'updateProfile', 'gender', 'dob_bs']);
+                                'email', 'phone_number', 'username', 'profile', 'updateProfile', 'gender', 'dob_bs', 'recruited_date_bs', 'department_id', 'documents']);
         $userid = $post['id'];
-
+        
         $rules['first_name'] = 'required|max:50';
         $rules['middle_name'] = 'max:50';
         $rules['last_name'] = 'required|max:50';
@@ -48,6 +48,11 @@ class UserRequest extends FormRequest
         if ($post['updateProfile'] == 'N') {
             $rules['gender'] = 'required';
             $rules['dob_bs'] = 'required';
+            $rules['recruited_date_bs'] = 'required';
+            $rules['department_id'] = 'required';
+            if ($post['documents'][0] != null) {
+                $rules['documents.*'] = 'required|mimes:png,jpg,jpeg,pdf,docx';
+            }
         }
 
         return $rules;
@@ -79,6 +84,10 @@ class UserRequest extends FormRequest
             'profile.mimes' => 'Upload jpg, jpeg or png file only',
             'gender.required' => 'Gender is required',
             'dob_bs.required' => 'Date of birth is required',
+            'recruited_date_bs.required' => 'Recruited date is required',
+            'department_id.required' => 'Department is required',
+            'documents.*.required' => 'Upload atleat one document',
+            'documents.*.mimes' => 'Upload png, jpg, jpeg, pdf or docx file only',
         ];
     }
 }

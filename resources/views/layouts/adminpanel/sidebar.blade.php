@@ -47,13 +47,13 @@
                     </li>
                     <li class="nk-menu-item">
                         <a href="{{route('project-management.index')}}" class="nk-menu-link">
-                            <span class="nk-menu-icon"><em class="icon ni ni-users"></em></span>
+                            <span class="nk-menu-icon"><em class="fa-solid fa-bars-progress fa-lg"></em></span>
                             <span class="nk-menu-text">Project Management</span>
                         </a>
                     </li>
                     <li class="nk-menu-item">
                         <a href="{{route('task-management.index')}}" class="nk-menu-link">
-                            <span class="nk-menu-icon"><em class="icon ni ni-users"></em></span>
+                            <span class="nk-menu-icon"><em class="fa-solid fa-list-check fa-lg"></em></span>
                             <span class="nk-menu-text">Task Management</span>
                         </a>
                     </li>

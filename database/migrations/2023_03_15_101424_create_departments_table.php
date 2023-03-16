@@ -13,8 +13,11 @@ return new class extends Migration
      */
     public function up()
     {
-        Schema::table('task_management', function (Blueprint $table) {
-            $table->string('completed_status')->nullable();
+        Schema::create('departments', function (Blueprint $table) {
+            $table->id();
+            $table->string('department_name');
+            $table->enum('status', ['Y', 'N'])->default('Y');
+            $table->timestamps();
         });
     }
 
@@ -25,8 +28,6 @@ return new class extends Migration
      */
     public function down()
     {
-        Schema::table('task_management', function (Blueprint $table) {
-            $table->dropColumn('completed_status');
-        });
+        Schema::dropIfExists('departments');
     }
 };

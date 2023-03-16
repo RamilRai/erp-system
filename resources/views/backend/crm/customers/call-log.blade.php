@@ -178,6 +178,7 @@
                             });
                             $('#callLogForm')[0].reset();
                             callLogTable.fnDraw();
+                            customerTable.fnDraw();
                         } else {
                             Swal.fire({
                                 title: 'Error!',

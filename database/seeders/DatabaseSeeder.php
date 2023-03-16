@@ -19,6 +19,7 @@ class DatabaseSeeder extends Seeder
             RoleSeeder::class,
             UserRoleSeeder::class,
             ProfileSeeder::class,
+            DepartmentSeeder::class,
             ServiceSeeder::class
         ]);
     }

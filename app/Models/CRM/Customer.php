@@ -88,21 +88,24 @@ class Customer extends Model
 
             $sql = "SELECT 
                         COUNT(*) OVER() as totalrecs, 
+                        CT.*,
+                        clog.* 
+                    FROM (SELECT id AS cust_id,
+                        company_name,
+                        owner_name,
+                        email,
+                        mobile_number,
+                        contract_end_date_ad,
+                        service_name 
+                        FROM customers WHERE $cond) AS CT
+                    LEFT JOIN
+                        (SELECT 
                         ccl.*, 
-                        lastdate.totalcalls, 
-                        ct.id,
-                        ct.company_name,
-                        ct.owner_name,
-                        ct.email,
-                        ct.mobile_number,
-                        ct.service_name,
-                        ct.contract_end_date_ad 
+                        lastdate.totalcalls
                     FROM 	
                         (SELECT max(id) AS id, count(id) AS totalcalls, customer_id FROM customer_call_logs GROUP BY customer_id) AS lastdate
                     INNER JOIN 
-                        customer_call_logs as ccl ON ccl.id = lastdate.id
-                    INNER JOIN 
-                        customers AS ct ON ct.id = ccl.customer_id";
+                        customer_call_logs as ccl ON ccl.id = lastdate.id) AS clog ON CT.cust_id = clog.customer_id";
 
             if ($limit > -1) {
                 $sql = $sql . ' limit ' . $limit . ' offset ' . $offset . '';

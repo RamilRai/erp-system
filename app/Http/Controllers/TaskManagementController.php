@@ -68,7 +68,7 @@ class TaskManagementController extends Controller
     public function taskManagementSubmit(TaskManagementRequest $request)
     {
         try {
-            $post = $request->only(['_token', 'id', 'task_title', 'project_id', 'task_type', 'task_start_date', 'task_start_date_ad', 'task_end_date', 'task_end_date_ad',
+            $post = $request->only(['_token', 'id', 'task_title', 'project_id', 'task_type', 'task_start_date_bs', 'task_start_date_ad', 'task_end_date_bs', 'task_end_date_ad',
                     'estimated_hour', 'priority', 'assigned_to', 'task_point', 'task_description', 'projectName']);
             
             $this->message = $post['id'] == null ? "Task Management Information Submitted Successfully." : "Task Management Information Updated Successfully.";
@@ -116,7 +116,7 @@ class TaskManagementController extends Controller
             $array[$i]["taskTitle"] = $row->task_title;
             $array[$i]["projectName"] = $row->project_name;
             $array[$i]["taskType"] = $row->task_type;
-            $array[$i]["timeDuration"] = $row->task_start_date . ' - ' . $row->task_end_date;
+            $array[$i]["timeDuration"] = $row->task_start_date_bs . ' - ' . $row->task_end_date_bs;
             $array[$i]["estimatedHour"] = $row->estimated_hour;
             $array[$i]["priority"] = $row->priority;
 
@@ -149,12 +149,12 @@ class TaskManagementController extends Controller
             }
             $array[$i]["taskStatus"] = $status;
             $array[$i]["changeTaskStatus"] = '<select>
-                                                    <option class="changeTaskStatus" data-id="' . $row->id .  '" value="Not Started Yet" ' .($row->task_status == "Not Started Yet" ? 'selected' : ''). '>Not Started Yet</option>
+                                                    <option class="changeTaskStatus" data-id="' . $row->id .  '" hidden value="Not Started Yet" ' .($row->task_status == "Not Started Yet" ? 'selected' : ''). '>Not Started Yet</option>
                                                     <option class="changeTaskStatus" data-id="' . $row->id .  '" value="On Progress" '.($row->task_status == "On Progress" ? 'selected' : ''). '>On Progress</option>
                                                     <option class="changeTaskStatus" data-id="' . $row->id .  '" value="Testing" '.($row->task_status == "Testing" ? 'selected' : ''). '>Testing</option>
+                                                    <option class="changeTaskStatus" data-id="' . $row->id .  '" value="Bug Fixing" '.($row->task_status == "Bug Fixing" ? 'selected' : ''). '>Bug Fixing</option>
                                                     <option class="changeTaskStatus" data-id="' . $row->id .  '" value="Cancelled" '.($row->task_status == "Cancelled" ? 'selected' : ''). '>Cancelled</option>
                                                     <option class="changeTaskStatus" data-id="' . $row->id .  '" value="Hold" '.($row->task_status == "Hold" ? 'selected' : ''). '>Hold</option>
-                                                    <option class="changeTaskStatus" data-id="' . $row->id .  '" value="Bug Fixing" '.($row->task_status == "Bug Fixing" ? 'selected' : ''). '>Bug Fixing</option>
                                                     <option class="changeTaskStatus" data-id="' . $row->id .  '" value="Completed" '.($row->task_status == "Completed" ? 'selected' : ''). '>Completed</option>
                                                     <option class="changeTaskStatus" data-id="' . $row->id .  '" value="Verified" '.($row->task_status == "Verified" ? 'selected' : ''). '>Verified</option>
                                                 </select>';
@@ -230,8 +230,6 @@ class TaskManagementController extends Controller
 
             //open model for file upload if completed is selected
             if ($post['value'] == 'Completed') {
-                // $currentDateTime = Carbon::now();
-                // $getCurrentTask->task_completed_date_and_time_ad = $currentDateTime->format('Y-m-d H:i:s');
                 $this->response = 'completed';
             }
 
@@ -240,11 +238,15 @@ class TaskManagementController extends Controller
                 $this->response = 'verified';
             }
 
-            if ($post['value'] == 'On Progress' || $post['value'] == 'Testing' || $post['value'] == 'Cancelled' || $post['value'] == 'Hold' || $post['value'] == 'Bug Fixing') {
-                // task status value
+            //open model for remarks form if cancelled or hold is selected
+            if ($post['value'] == 'Cancelled' || $post['value'] == 'Hold' ) {
+                $this->response = 'revoke';
+            }
+
+            //update task status
+            if ($post['value'] == 'On Progress' || $post['value'] == 'Testing' || $post['value'] == 'Bug Fixing') {
                 $getCurrentTask->task_status = $post['value'];
     
-                // save values
                 $result = $getCurrentTask->save();
                 
                 if (!$result){
@@ -265,6 +267,8 @@ class TaskManagementController extends Controller
         Common::getJsonData($this->type, $this->message, $this->response);
     }
 
+    //=========================================== task status to completed start ===========================================
+
     public function taskManagementDocuments(Request $request)
     {
         $data['taskId'] = $request->id;
@@ -274,7 +278,7 @@ class TaskManagementController extends Controller
     public function taskManagementDocumentsSubmit(Request $request)
     {
         try {
-            $post = $request->only(['_token', 'id', 'documents']);
+            $post = $request->only(['_token', 'id', 'documents', 'feedback']);
             
             $this->message = "Task Status Changed And Documents For Current Task Submitted Successfully.";
 
@@ -312,6 +316,10 @@ class TaskManagementController extends Controller
         Common::getJsonData($this->type, $this->message, $this->response);
     }
 
+    //=========================================== task status to completed end ===========================================
+
+    //=========================================== task status to verified start ===========================================
+
     public function taskManagementMarks(Request $request)
     {
         $data['taskId'] = $request->id;
@@ -321,7 +329,7 @@ class TaskManagementController extends Controller
     public function taskManagementMarksSubmit(Request $request)
     {
         try {
-            $post = $request->only(['_token', 'id', 'achieved_point']);
+            $post = $request->only(['_token', 'id', 'achieved_point', 'response_from_supervisor']);
             
             $this->message = "Task Status Changed And Marks For Current Task Submitted Successfully.";
 
@@ -341,4 +349,41 @@ class TaskManagementController extends Controller
         }
         Common::getJsonData($this->type, $this->message, $this->response);
     }
+
+    //=========================================== task status to verified end ===========================================
+
+    //=========================================== task status to cancelled or hold start ===========================================
+
+    public function taskManagementRevoke(Request $request)
+    {
+        $data['taskId'] = $request->id;
+        $data['taskValue'] = $request->value;
+        return view('backend.task-management.revoke', $data);
+    }
+
+    public function taskManagementRevokeSubmit(Request $request)
+    {
+        try {
+            $post = $request->only(['_token', 'id', 'value', 'feedback']);
+            
+            $this->message = "Task Status Changed And Remarks For Current Task Submitted Successfully.";
+
+            DB::beginTransaction();
+
+            $sendDataToModel = TaskManagement::storeRemarks($post);
+
+            DB::commit();
+        } catch (QueryException $qe) {
+            DB::rollback();
+            $this->type = 'error';
+            $this->message = $this->queryExceptionMessage;
+        } catch (Exception $e) {
+            DB::rollback();
+            $this->type = 'error';
+            $this->message = $e->getMessage();
+        }
+        Common::getJsonData($this->type, $this->message, $this->response);
+    }
+
+    //=========================================== task status to cancelled or hold end ===========================================
 }

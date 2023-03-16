@@ -38,24 +38,25 @@
                         <option value="Correction" @if (@$taskManagement->task_type == 'Correction') selected @endif>Correction</option>
                         <option value="Testing" @if (@$taskManagement->task_type == 'Testing') selected @endif>Testing</option>
                         <option value="Documentation" @if (@$taskManagement->task_type == 'Documentation') selected @endif>Documentation</option>
+                        <option value="Support" @if (@$taskManagement->task_type == 'Support') selected @endif>Support</option>
                     </select>
                 </div>
                 <p class="form-text text-danger task_type"></p>
             </div>
             <div class="form-group col-4">
-                <label class="form-label" for="task_start_date">Task Start Date <code>*</code></label>
+                <label class="form-label" for="task_start_date_bs">Task Start Date <code>*</code></label>
                 <div class="form-control-wrap">
-                    <input type="text" class="form-control" id="task_start_date" name="task_start_date" value="{{isset($taskManagement)?$taskManagement->task_start_date:''}}">
+                    <input type="text" class="form-control" id="task_start_date_bs" name="task_start_date_bs" value="{{isset($taskManagement)?$taskManagement->task_start_date_bs:''}}">
                 </div>
-                <p class="form-text text-danger task_start_date"></p>
+                <p class="form-text text-danger task_start_date_bs"></p>
             </div>
             <input type="hidden" id="task_start_date_ad" name="task_start_date_ad" value="{{isset($taskManagement)?$taskManagement->task_start_date_ad:''}}">
             <div class="form-group col-4">
-                <label class="form-label" for="task_end_date">Task End Date <code>*</code></label>
+                <label class="form-label" for="task_end_date_bs">Task End Date <code>*</code></label>
                 <div class="form-control-wrap">
-                    <input type="text" class="form-control" id="task_end_date" name="task_end_date" value="{{isset($taskManagement)?$taskManagement->task_end_date:''}}">
+                    <input type="text" class="form-control" id="task_end_date_bs" name="task_end_date_bs" value="{{isset($taskManagement)?$taskManagement->task_end_date_bs:''}}">
                 </div>
-                <p class="form-text text-danger task_end_date"></p>
+                <p class="form-text text-danger task_end_date_bs"></p>
             </div>
             <input type="hidden" id="task_end_date_ad" name="task_end_date_ad" value="{{isset($taskManagement)?$taskManagement->task_end_date_ad:''}}">
             <div class="form-group col-4">
@@ -124,32 +125,39 @@
     //================== ckeditor end ==================
 
     //================== task start date start ==================
-    $("#task_start_date").nepaliDatePicker({
+    $("#task_start_date_bs").nepaliDatePicker({
         ndpYear: true,
         ndpMonth: true,
         language: "english",
         onChange: function() {
-            var dateInBs = $('#task_start_date').val();
+            var dateInBs = $('#task_start_date_bs').val();
             var dateinAD = NepaliFunctions.BS2AD(dateInBs, "YYYY-MM-DD");
             $("#task_start_date_ad").val(dateinAD);
-            $("#task_start_date").trigger('change');
+            $("#task_start_date_bs").trigger('change');
         }
     });
     //================== task start date end ==================
 
     //================== task end date start ==================
-    $("#task_end_date").nepaliDatePicker({
+    $("#task_end_date_bs").nepaliDatePicker({
         ndpYear: true,
         ndpMonth: true,
         language: "english",
         onChange: function() {
-            var dateInBs = $('#task_end_date').val();
+            var dateInBs = $('#task_end_date_bs').val();
             var dateinAD = NepaliFunctions.BS2AD(dateInBs, "YYYY-MM-DD");
             $("#task_end_date_ad").val(dateinAD);
-            $("#task_end_date").trigger('change');
+            $("#task_end_date_bs").trigger('change');
         }
     });
     //================== task end date end ==================
+
+    //================== Remove non-numeric characters from the input value start ==================
+    $('#task_point').on('input', function() {
+        var inputVal = $(this).val().replace(/[^0-9]/g, '');
+        $(this).val(inputVal);
+    });
+    //================== Remove non-numeric characters from the input value end ==================
 
     //================== store data start ==================
     $('#saveTaskManagementInfo').on('click', function(e){
@@ -162,8 +170,8 @@
                 },
                 project_id: 'required',
                 task_type: 'required',
-                task_start_date: 'required',
-                task_end_date: 'required',
+                task_start_date_bs: 'required',
+                task_end_date_bs: 'required',
                 estimated_hour: {
                     required: true,
                     maxlength: 100
@@ -183,10 +191,10 @@
                 task_type: {
                     required: "Please select task type."
                 },
-                task_start_date: {
+                task_start_date_bs: {
                     required: "Please select task start date."
                 },
-                task_end_date: {
+                task_end_date_bs: {
                     required: "Please select task end date."
                 },
                 estimated_hour: {
@@ -238,10 +246,10 @@
                         $('#taskManagementModalShow').hide();
                         taskManagementTable.fnDraw();
                     } else if(result.type=='error') {
-                        $('.errorLogin').html("");
-                        $('.errorLogin').addClass('alert alert-danger');
-                        $.each(JSON.parse(result.message),function(key,err_values){
-                            $('.errorLogin').append('<li>'+err_values+'</li>').fadeOut(5000);
+                        Swal.fire({
+                            position: 'center',
+                            icon: 'error',
+                            text: result.message
                         });
                     }
                 },

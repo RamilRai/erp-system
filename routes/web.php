@@ -62,6 +62,11 @@ Route::controller(UserController::class)->middleware(['auth'])->prefix('admin/us
     Route::get('/user-fetch', 'userFetch')->name('user.fetch');
     Route::post('/user-view', 'userView')->name('user.view');
     Route::post('/user-delete', 'userDelete')->name('user.delete');
+
+    // add department
+    Route::get('/department-create-load', 'departmentLoad')->name('department.load');
+    Route::post('/department-create-form', 'departmentForm')->name('department.form');
+    Route::post('/department-create-submit', 'departmentSubmit')->name('department.submit');
 });
 
 //===============================================================================================================================
@@ -131,10 +136,15 @@ Route::controller(TaskManagementController::class)->middleware(['auth'])->prefix
     Route::post('/view', 'taskManagementView')->name('task-management.view');
     Route::post('/delete', 'taskManagementDelete')->name('task-management.delete');
     Route::post('/change-task-status', 'changeTaskStatus')->name('change.task.status');
+    // if task completed
     Route::post('/documents', 'taskManagementDocuments')->name('task-management.documents');
     Route::post('/documents-submit', 'taskManagementDocumentsSubmit')->name('task-management-documents.submit');
+    // if task verified
     Route::post('/marks', 'taskManagementMarks')->name('task-management.marks');
     Route::post('/marks-submit', 'taskManagementMarksSubmit')->name('task-management-marks.submit');
+    // if task cancelled or hold
+    Route::post('/revoke', 'taskManagementRevoke')->name('task-management.revoke');
+    Route::post('/revoke-submit', 'taskManagementRevokeSubmit')->name('task-management-revoke.submit');
 });
 
 //===============================================================================================================================

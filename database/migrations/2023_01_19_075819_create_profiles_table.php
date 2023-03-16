@@ -28,6 +28,10 @@ return new class extends Migration
             $table->date('dob_bs')->nullable();
             $table->date('dob_ad')->nullable();
             $table->string('blood_group')->nullable();
+            $table->date('recruited_date_bs')->nullable();
+            $table->date('recruited_date_ad')->nullable();
+            $table->string('documents')->nullable();
+            $table->integer('department_id')->nullable();
             $table->enum('status', ['Y', 'N'])->default('Y');
             $table->timestamps();
         });

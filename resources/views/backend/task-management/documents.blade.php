@@ -12,7 +12,7 @@
     }
 </style>
 <div class="modal-header">
-    <h5 class="modal-title">Documents</h5>
+    <h5 class="modal-title">Documents & Feedback Form</h5>
     <a href="#" class="close" data-bs-dismiss="modal" aria-label="Close">
         <em class="icon ni ni-cross"></em>
     </a>
@@ -30,6 +30,12 @@
                 <p class="form-text text-danger documents"></p>
                 <div id="imgPreview"></div>
             </div>
+            <div class="form-group col-12">
+                <label class="form-label" for="feedback">Feedback/Remarks </label>
+                <div class="form-control-wrap">
+                    <textarea class="form-control" name="feedback" id="feedback" cols="30" rows="5"></textarea>
+                </div>
+            </div>
         </div>
         <div class="form-group mt-2">
             <button type="submit" class="btn btn-lg btn-primary" id="saveTaskDocuments"><i class="fa-solid fa-floppy-disk"></i>&nbsp;Save Information</button>
@@ -38,25 +44,32 @@
 </div>
 
 <script>
-    //uploaded image preview start
-    $('#documents').change(function() {
-        var file = this.files;
-        var fileType = file[0].type;
+    //================== uploaded image preview start ==================
+    $('#documents').on('change', function() {
+        var files = $(this).prop('files');
 
         $('#imgPreview').empty();
-        if (fileType.indexOf('image') !== -1) {
-            if (file) {
-                for (var i = 0; i < file.length; i++) {
-                    var reader = new FileReader();
-                    reader.onload = function(e) {
-                        $('#imgPreview').append('<img src="' + e.target.result + '">');
-                    }
-                    reader.readAsDataURL(file[i]);
-                }
+        // Loop through each file and check if it is an image or pdf or word
+        for (var i = 0; i < files.length; i++) {
+            var file = files[i];
+            var fileReader = new FileReader();
+
+            if (file.type.match('image.*')) {
+                fileReader.onload = function(e) {
+                    var imagePreview = $('<img>').attr('src', e.target.result);
+                    $('#imgPreview').append(imagePreview);
+                };
+                fileReader.readAsDataURL(file);
+            } else if(file.type === "application/pdf") {
+                var fileName = $('<img>').attr('src', "{{asset('default-images/pdf.png')}}");
+                $('#imgPreview').append(fileName);
+            } else if(file.type === "application/vnd.openxmlformats-officedocument.wordprocessingml.document") {
+                var fileName = $('<img>').attr('src', "{{asset('default-images/word.png')}}");
+                $('#imgPreview').append(fileName);
             }
         }
     });
-    // uploaded image preview end
+    //================== uploaded image preview end ==================
 
     //================== store data start ==================
     $("#saveTaskDocuments").on('click', function(e){

@@ -8,6 +8,7 @@ use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Mail\Transport\Transport;
 use Illuminate\Notifications\Notifiable;
 use Laravel\Sanctum\HasApiTokens;
+use Illuminate\Support\Arr;
 use Hash;
 use Str;
 use Exception;
@@ -76,6 +77,7 @@ class User extends Authenticatable
     public static function storeUser($post, $user)
     {
         try {
+            Arr::forget($post, 'documents');
             $freshData = sanitizeData($post);
             //=============== check existence of username in database start ===============
             $usersArray = [];
