@@ -17,7 +17,7 @@
     <link id="skin-default" rel="stylesheet" href="{{asset('backend/assets/css/theme.css?ver=3.0.3')}}">
 
     {{-- nepali date picker style --}}
-    <link rel="stylesheet" href="{{asset('backend/links/nepali.datepicker.v3.7/css/nepali.datepicker.v3.7.min.css')}}">
+    <link rel="stylesheet" href="{{asset('backend/links/nepali.datepicker.v4.0.1/css/nepali.datepicker.v4.0.1.min.css')}}">
 
     {{-- datatable link --}}
     <link rel="stylesheet" href="{{asset('backend/links/dataTables.min.css')}}">
@@ -71,7 +71,7 @@
     <script src="{{asset('backend/links/jquery-3.6.3.js')}}"></script>
 
     {{-- nepali date picker script --}}
-    <script src="{{asset('backend/links/nepali.datepicker.v3.7/js/nepali.datepicker.v3.7.min.js')}}"></script>
+    <script src="{{asset('backend/links/nepali.datepicker.v4.0.1/js/nepali.datepicker.v4.0.1.min.js')}}"></script>
 
     {{-- jquery validation script --}}
     <script src="{{asset('backend/links/jquery.validate.min.js')}}"></script>
