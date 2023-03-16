@@ -19,15 +19,17 @@
         <div class="nk-sidebar-content">
             <div class="nk-sidebar-menu" data-simplebar>
                 <ul class="nk-menu">
-                    <li class="nk-menu-heading">
-                        <h6 class="overline-title text-primary-alt">User Management</h6>
-                    </li>
-                    <li class="nk-menu-item">
-                        <a href="{{route('user.index')}}" class="nk-menu-link">
-                            <span class="nk-menu-icon"><em class="icon ni ni-users"></em></span>
-                            <span class="nk-menu-text">User Manage</span>
-                        </a>
-                    </li>
+                    @if ($userRole->role_id == 1)
+                        <li class="nk-menu-heading">
+                            <h6 class="overline-title text-primary-alt">User Management</h6>
+                        </li>
+                        <li class="nk-menu-item">
+                            <a href="{{route('user.index')}}" class="nk-menu-link">
+                                <span class="nk-menu-icon"><em class="icon ni ni-users"></em></span>
+                                <span class="nk-menu-text">User Manage</span>
+                            </a>
+                        </li>
+                    @endif
                     <li class="nk-menu-heading">
                         <h6 class="overline-title text-primary-alt">Use-Case Preview</h6>
                     </li>

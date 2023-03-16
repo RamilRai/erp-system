@@ -17,7 +17,7 @@
     <link id="skin-default" rel="stylesheet" href="{{asset('backend/assets/css/theme.css?ver=3.0.3')}}">
 
     {{-- nepali date picker style --}}
-    <link href="http://nepalidatepicker.sajanmaharjan.com.np/nepali.datepicker/css/nepali.datepicker.v4.0.min.css" rel="stylesheet" type="text/css"/>
+    <link rel="stylesheet" href="{{asset('backend/links/nepali.datepicker.v3.7/css/nepali.datepicker.v3.7.min.css')}}">
 
     {{-- datatable link --}}
     <link rel="stylesheet" href="{{asset('backend/links/dataTables.min.css')}}">
@@ -26,7 +26,7 @@
     <link rel="stylesheet" href="{{asset('backend/links/fontawesome-6.3.0/css/all.min.css')}}">
 
     {{-- select 2 css --}}
-    <link href="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.13/css/select2.min.css" rel="stylesheet" />
+    <link rel="stylesheet" href="{{asset('backend/links/select2.min.css')}}">
 
     @yield('main-styles')
     <style>
@@ -71,13 +71,13 @@
     <script src="{{asset('backend/links/jquery-3.6.3.js')}}"></script>
 
     {{-- nepali date picker script --}}
-    <script src="http://nepalidatepicker.sajanmaharjan.com.np/nepali.datepicker/js/nepali.datepicker.v4.0.min.js" type="text/javascript"></script>
+    <script src="{{asset('backend/links/nepali.datepicker.v3.7/js/nepali.datepicker.v3.7.min.js')}}"></script>
 
     {{-- jquery validation script --}}
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-validate/1.19.5/jquery.validate.min.js" integrity="sha512-rstIgDs0xPgmG6RX1Aba4KV5cWJbAMcvRCVmglpam9SoHZiUCyQVDdH2LPlxoHtrv17XWblE/V/PP+Tr04hbtA==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
-
+    <script src="{{asset('backend/links/jquery.validate.min.js')}}"></script>
+    
     {{-- ajax submit script --}}
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.form/4.3.0/jquery.form.min.js" integrity="sha512-YUkaLm+KJ5lQXDBdqBqk7EVhJAdxRnVdT2vtCzwPHSweCzyMgYV/tgGF4/dCyqtCC2eCphz0lRQgatGVdfR0ww==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+    <script src="{{asset('backend/links/jquery.form.min.js')}}"></script>
 
     {{-- cdn link for ck edittor --}}
     <script src="{{asset('backend/links/ckeditor/ckeditor.js')}}"></script>
@@ -87,7 +87,7 @@
     <script src="{{asset('backend/dist/js/jquery.dataTables.columnFilter.js')}}"></script>
 
     {{-- select 2 js link --}}
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.13/js/select2.min.js"></script>
+    <script src="{{asset('backend/links/select2.min.js')}}"></script>
 
     <script>
         function getUserData(){
