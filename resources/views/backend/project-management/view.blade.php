@@ -31,20 +31,8 @@
                     </tr>
                     @if ($result->project_type == 'Client')
                         <tr>
-                            <th scope="row">Client Company Name</th>
-                            <td>{{$result->client_company_name}}</td>
-                        </tr>
-                        <tr>
-                            <th scope="row">Client's Contact Person</th>
-                            <td>{{$result->contact_person}}</td>
-                        </tr>
-                        <tr>
-                            <th scope="row">Clinet's Phone Number</th>
-                            <td>{{$result->phone_number}}</td>
-                        </tr>
-                        <tr>
-                            <th scope="row">Client's Email Address</th>
-                            <td>{{$result->email}}</td>
+                            <th scope="row">Customer</th>
+                            <td>{{$result->customer->company_name}}</td>
                         </tr>
                     @endif
                     <tr>

@@ -180,6 +180,8 @@
                     $('.modal-dialog').removeClass('modal modal-lg');
                     $('.modal-dialog').addClass('modal-xl');
                     $('#task_type').trigger('change');
+                    $('#project_id').trigger('change');
+                    $('#project_id').attr('disabled', true);
                 });
             });
             //================== edit data end ==================

@@ -18,10 +18,7 @@ return new class extends Migration
             $table->string('project_name', 100)->nullable();
             $table->string('pdf')->nullable();
             $table->string('project_type')->nullable();
-            $table->string('client_company_name', 100)->nullable();
-            $table->string('contact_person', 100)->nullable();
-            $table->string('phone_number', 100)->nullable();
-            $table->string('email', 100)->nullable();
+            $table->foreignId('customer_id', 100)->constrained('customers', 'id')->cascadeOnDelete()->cascadeOnUpdate()->nullable();
             $table->string('project_time_duration', 100)->nullable();
             $table->date('start_date_bs')->nullable();
             $table->date('start_date_ad')->nullable();

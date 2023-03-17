@@ -83,11 +83,12 @@
                 <label class="form-label" for="assigned_to">Assign Member/Members <code>*</code></label>
                 <div class="form-control-wrap">
                     <select class="form-control" name="assigned_to[]" id="assigned_to" multiple="multiple">
-                        @foreach ($teamMembers as $tm_item)
+                        {{-- @foreach ($teamMembers as $tm_item)
                             <option value="{{$tm_item->user_id}}" @isset($assignedTeamMembers) {{ in_array($tm_item->user_id, $assignedTeamMembers) ? 'selected' : '' }} @endisset>{{$tm_item->first_name}} {{$tm_item->middle_name}} {{$tm_item->last_name}}</option>
-                        @endforeach 
+                        @endforeach  --}}
                     </select>
                 </div>
+                <input type="hidden" id="assignedMembers" value="{{isset($taskManagement->assigned_to)?$taskManagement->assigned_to : ''}}">
                 <p class="form-text text-danger assigned_to"></p>
             </div>
             <div class="form-group col-4">
@@ -98,7 +99,7 @@
                 <p class="form-text text-danger task_point"></p>
             </div>
             <div class="form-group col-12">
-                <label class="form-label" for="task_description">Task Description <code>*</code></label>
+                <label class="form-label" for="task_description">Task Description </label>
                 <div class="form-control-wrap">
                     <textarea class="form-control" name="task_description" id="task_description" cols="30" rows="10">{{isset($taskManagement)?$taskManagement->task_description:''}}</textarea>
                 </div>
@@ -158,6 +159,24 @@
         $(this).val(inputVal);
     });
     //================== Remove non-numeric characters from the input value end ==================
+
+    //================== list members as per project start ==================
+    $("#project_id").off('change');
+    $("#project_id").on('change', function(){
+        var assignedMembersId = $("#assignedMembers").val();
+        var projectId = $(this).val();
+        var url = '{{route('task-management.fetch-team-members')}}';
+        var token = "{{csrf_token()}}";
+        var data = {projectId:projectId, assignedMembersId:assignedMembersId, '_token':token};
+        $.post(url, data, function(response){
+            var result = JSON.parse(response);
+            console.log(result.response);
+            if (result.type == "success") {
+                $("#assigned_to").html(result.response);
+            }
+        });
+    });
+    //================== list members as per project end ==================
 
     //================== store data start ==================
     $('#saveTaskManagementInfo').on('click', function(e){

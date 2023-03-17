@@ -95,7 +95,7 @@
                 <p class="form-text text-danger contracted_date"></p>
             </div>
             <div class="form-group col-4">
-                <label class="form-label" for="contract_end_date">Contract End Date <code>*</code></label>
+                <label class="form-label" for="contract_end_date">Contract End Date/Renew Date <code>*</code></label>
                 <div class="form-control-wrap">
                     <input type="text" class="form-control" id="contract_end_date" name="contract_end_date" value="{{isset($customer)?$customer->contract_end_date:''}}">
                 </div>

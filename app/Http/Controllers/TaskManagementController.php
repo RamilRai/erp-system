@@ -40,7 +40,6 @@ class TaskManagementController extends Controller
         $post = $request->only(['id', '_token']);
         $data = [];
         $data['projectName'] = DB::table('project_management')->select('id', 'project_name')->where('status', 'Y')->get();
-        $data['teamMembers'] = DB::table('profiles as P')->join('user_roles as UR', 'P.user_id', '=', 'UR.user_id')->where(['role_id'=>3, 'P.status'=>'Y', 'UR.status'=>'Y'])->get();
         if (!empty($post['id'])) {
             $data['taskManagement'] = TaskManagement::where(['id'=>$post['id'], 'status'=>'Y'])->first();
             $data['assignedTeamMembers'] = json_decode($data['taskManagement']->assigned_to);
@@ -63,6 +62,37 @@ class TaskManagementController extends Controller
             @header('Content-type:text/html;charset=utf-8');
             echo $response;
         }
+    }
+
+    public function fetchTeamMembers(Request $request)
+    {
+        try {
+            $post = $request->only(['_token', 'projectId', 'assignedMembersId']);
+            $this->message = "Team Members fetched successfully.";
+    
+            $selectTeamMembers = DB::table('project_management')->select('assign_team_members')->where('id', $post['projectId'])->first();
+            $teamMembersArray = json_decode($selectTeamMembers->assign_team_members);
+            $teamMembers = DB::table('profiles')->select('id', 'first_name', 'middle_name', 'last_name')->whereIn('id', $teamMembersArray)->get();
+            $this->response = [];
+            foreach ($teamMembers as $value) {
+                // to get selected value while editing start
+                $assignedMembers = json_decode($post['assignedMembersId']);
+                $selectMembers = '';
+                if ($post['assignedMembersId'] != null) {
+                    $selectMembers = in_array($value->id, $assignedMembers) ? "selected = 'selected'" : "";
+                }
+                // to get selected value while editing end
+                $this->response[] = '<option value="'.$value->id.'" '. $selectMembers .'>'.$value->first_name . ' ' . $value->middle_name . ' ' . $value->last_name .'</option>';
+            }
+
+        } catch (QueryException $qe) {
+            $this->type = 'error';
+            $this->message = $this->queryExceptionMessage;
+        } catch (Exception $e) {
+            $this->type = 'error';
+            $this->message = $e->getMessage();
+        }
+        Common::getJsonData($this->type, $this->message, $this->response);
     }
 
     public function taskManagementSubmit(TaskManagementRequest $request)

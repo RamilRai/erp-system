@@ -131,6 +131,7 @@ Route::controller(TaskManagementController::class)->middleware(['auth'])->prefix
     Route::get('/', 'index')->name('task-management.index');
     Route::post('/ckeditor-fileupload', 'ckeditorFileUpload')->name('taskManagement.ckeditor.fileupload');
     Route::post('/create', 'taskManagementCreate')->name('task-management.create');
+    Route::post('/fetch-team-members', 'fetchTeamMembers')->name('task-management.fetch-team-members');
     Route::post('/submit', 'taskManagementSubmit')->name('task-management.submit');
     Route::get('/fetch', 'taskManagementFetch')->name('task-management.fetch');
     Route::post('/view', 'taskManagementView')->name('task-management.view');

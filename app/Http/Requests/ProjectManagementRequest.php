@@ -24,16 +24,13 @@ class ProjectManagementRequest extends FormRequest
      */
     public function rules(Request $request)
     {
-        $post = $request->only(['_token', 'id', 'project_name', 'pdf', 'project_type', 'client_company_name', 'contact_person',
-        'phone_number', 'email', 'project_time_duration', 'start_date_bs', 'start_date_ad', 'end_date_bs', 'end_date_ad', 'project_lead_by', 'assign_team_members', 'project_status']);
+        $post = $request->only(['_token', 'id', 'project_name', 'pdf', 'project_type', 'customer_id', 'project_time_duration', 
+        'start_date_bs', 'start_date_ad', 'end_date_bs', 'end_date_ad', 'project_lead_by', 'assign_team_members', 'project_status']);
 
         $rules['project_name'] = 'required|max:100';
         $rules['project_type'] = 'required';
         if ($post['project_type'] == 'Client') {
-            $rules['client_company_name'] = 'required|max:100';
-            $rules['contact_person'] = 'required|max:100';
-            $rules['phone_number'] = 'required|max:100';
-            $rules['email'] = 'required|email|max:100';
+            $rules['customer_id'] = 'required';
         }
         if ($post['pdf']) {
             $rules['pdf'] = 'mimes:pdf';

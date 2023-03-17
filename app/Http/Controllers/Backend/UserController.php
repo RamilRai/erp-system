@@ -78,6 +78,10 @@ class UserController extends Controller
             // insert into users table-1
             $user = $post['id'] == null ? new User : User::where('id', $post['id'])->first();
 
+            if ($post['email'] != $user->email) {
+                $this->message = "Verify Email While Logging In Again.";
+            }
+
             $storeUser = User::storeUser($post, $user);
 
             // insert into profiles table-2
@@ -91,28 +95,30 @@ class UserController extends Controller
                 $this->uploadImage($image, $folder, $fileName);
                 $profile->profile = $fileName;
             }
-            if ($post['documents'][0] != null) {
-                $arrayDocuments = [];
-                foreach ($request->file('documents') as $image) {
-                    $folder = 'storage/user-documents';
-                    $fileName = $image->hashName();
-                    $fileExtension = $image->getClientOriginalExtension();
-                    if ($fileExtension == 'pdf' || $fileExtension == 'docx') {
-                        $image->move(public_path($folder), $fileName);
+            if ($post['updateProfile'] != "Y") {
+                if ($post['documents'][0] != null) {
+                    $arrayDocuments = [];
+                    foreach ($request->file('documents') as $image) {
+                        $folder = 'storage/user-documents';
+                        $fileName = $image->hashName();
+                        $fileExtension = $image->getClientOriginalExtension();
+                        if ($fileExtension == 'pdf' || $fileExtension == 'docx') {
+                            $image->move(public_path($folder), $fileName);
+                        } else {
+                            $this->uploadImage($image, $folder, $fileName);
+                        }
+                        
+                        $arrayDocuments[] = $fileName;
+                    }
+                    if ($post['id'] == null) {
+                        $profile->documents = json_encode($arrayDocuments);
                     } else {
-                        $this->uploadImage($image, $folder, $fileName);
+                        $fetchOldData = Profile::select('documents')->where('user_id', $post['id'])->first();
+                        $oldData = json_decode($fetchOldData->documents);
+                        $profile->documents = json_encode(array_merge($oldData, $arrayDocuments));
                     }
                     
-                    $arrayDocuments[] = $fileName;
                 }
-                if ($post['id'] == null) {
-                    $profile->documents = json_encode($arrayDocuments);
-                } else {
-                    $fetchOldData = Profile::select('documents')->where('user_id', $post['id'])->first();
-                    $oldData = json_decode($fetchOldData->documents);
-                    $profile->documents = json_encode(array_merge($oldData, $arrayDocuments));
-                }
-                
             }
             
             $storeProfile = Profile::storeProfile($post, $profile);

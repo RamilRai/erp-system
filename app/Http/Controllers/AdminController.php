@@ -7,6 +7,8 @@ use Illuminate\Database\QueryException;
 use App\Models\{User, Role, UserRole};
 use App\Http\Requests\AdminRequest;
 use App\Http\Requests\SendOtpRequest;
+use Illuminate\Support\Facades\Mail;
+use App\Mail\OtpMail;
 use Auth;
 use Hash;
 use Str;
@@ -37,9 +39,16 @@ class AdminController extends Controller
 
             if(Auth::attempt(['email'=> $post['email_userName'],'password'=>$post['password'], 'status'=>'Y']) || Auth::attempt(['username'=> $post['email_userName'],'password'=>$post['password'], 'status'=>'Y'])){
                 if ($userDetails['user']->first_login == null) {
+                    $user = User::where('email', $post['email_userName'])->orWhere('username', $post['email_userName'])->first();
+                    $digit = rand(010101, 999999);
+                    $user->otp = $digit;
+                    $user->save();
+
+                    Mail::to($user->email)->send(new OtpMail($digit));
+
                     session()->put('username',$userDetails['user']->username);
                     session()->save();
-                    return redirect()->route('admin.otp');
+                    return redirect()->route('admin.otp')->with('success', 'OTP sent, please check your email.');
                 }
 
                 if($userDetails['userRole']->role_id == 1){
@@ -89,11 +98,11 @@ class AdminController extends Controller
             session()->save();
 
             if($userDetails->role_id == 1){
-                return redirect()->route('superadmin.dashboard', session('username'))->with('success', 'You have log in successfully');
+                return redirect()->route('superadmin.dashboard')->with('success', 'You have log in successfully');
             }elseif($userDetails->role_id == 2){
-                return redirect()->route('technical.dashboard', session('username'))->with('success', 'You have log in successfully');
+                return redirect()->route('technical.dashboard')->with('success', 'You have log in successfully');
             }else{
-                return redirect()->route('admin.dashboard', session('username'))->with('success', 'You have log in successfully');
+                return redirect()->route('admin.dashboard')->with('success', 'You have log in successfully');
             }
         } else {
             return redirect()->route('admin.otp')->with('error', 'OTP does not match');
@@ -187,7 +196,7 @@ class AdminController extends Controller
         exit;
     }
 
-    public function sendOtp(SendOtpRequest $request)
+    public function sendOtp(Request $request)
     {
         try{
             $type = 'success';

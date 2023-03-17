@@ -5,6 +5,7 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use App\Models\Profile;
+use App\Models\CRM\Customer;
 use Illuminate\Support\Arr;
 use Exception;
 use Str;
@@ -20,6 +21,11 @@ class ProjectManagement extends Model
         return $this->belongsTo(Profile::class, 'project_lead_by', 'id');
     }
 
+    public function customer()
+    {
+        return $this->belongsTo(Customer::class, 'customer_id', 'id');
+    }
+
     public static function storeData($post, $projectManagement)
     {
         try {
@@ -29,10 +35,7 @@ class ProjectManagement extends Model
             $projectManagement->project_name = Str::title($freshData['project_name']);
             $projectManagement->project_type = $freshData['project_type'];
             if ($freshData['project_type'] == 'Client') {
-                $projectManagement->client_company_name = Str::title($freshData['client_company_name']);
-                $projectManagement->contact_person = Str::title($freshData['contact_person']);
-                $projectManagement->phone_number = $freshData['phone_number'];
-                $projectManagement->email = $freshData['email'];
+                $projectManagement->customer_id = Str::title($freshData['customer_id']);
             }
             $projectManagement->project_time_duration = $freshData['project_time_duration'];
             $projectManagement->start_date_bs = $freshData['start_date_bs'];

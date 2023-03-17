@@ -17,7 +17,7 @@
                 <p class="form-text text-danger project_name"></p>
             </div>
             <div class="form-group col-4">
-                <label class="form-label" for="pdf">PDF File </label>
+                <label class="form-label" for="pdf">Project Information <span class="text-danger">(In PDF)</span></label>
                 <div class="form-control-wrap">
                     <input type="file" class="form-control" id="pdf" name="pdf">
                 </div>
@@ -35,32 +35,16 @@
                 <p class="form-text text-danger project_type"></p>
             </div>
             <div class="form-group col-4 clientInfo" style="display:none;">
-                <label class="form-label" for="client_company_name">Client Company Name <code>*</code></label>
+                <label class="form-label" for="customer_id">Customer <code>*</code></label>
                 <div class="form-control-wrap">
-                    <input type="text" class="form-control resetValue" id="client_company_name" name="client_company_name" value="{{isset($projectManagement)?$projectManagement->client_company_name:''}}">
+                    <select class="form-control resetValue" name="customer_id" id="customer_id">
+                        <option value="" hidden>-- Select Customer --</option>
+                        @foreach ($customers as $c_item)
+                            <option value="{{$c_item->id}}" {{$c_item->id == @$projectManagement->customer_id ? 'selected':''}}>{{$c_item->company_name}}</option>
+                        @endforeach
+                    </select>
                 </div>
-                <p class="form-text text-danger client_company_name"></p>
-            </div>
-            <div class="form-group col-4 clientInfo" style="display:none;">
-                <label class="form-label" for="contact_person">Contact Person <code>*</code></label>
-                <div class="form-control-wrap">
-                    <input type="text" class="form-control resetValue" id="contact_person" name="contact_person" value="{{isset($projectManagement)?$projectManagement->contact_person:''}}">
-                </div>
-                <p class="form-text text-danger contact_person"></p>
-            </div>
-            <div class="form-group col-4 clientInfo" style="display:none;">
-                <label class="form-label" for="phone_number">Phone Number <code>*</code></label>
-                <div class="form-control-wrap">
-                    <input type="tel" class="form-control resetValue" id="phone_number" name="phone_number" value="{{isset($projectManagement)?$projectManagement->phone_number:''}}">
-                </div>
-                <p class="form-text text-danger phone_number"></p>
-            </div>
-            <div class="form-group col-4 clientInfo" style="display:none;">
-                <label class="form-label" for="email">Email Address <code>*</code></label>
-                <div class="form-control-wrap">
-                    <input type="email" class="form-control resetValue" id="email" name="email" value="{{isset($projectManagement)?$projectManagement->email:''}}">
-                </div>
-                <p class="form-text text-danger email"></p>
+                <p class="form-text text-danger customer_id"></p>
             </div>
             <div class="form-group col-4">
                 <label class="form-label" for="project_time_duration">Project Time Duration <code>*</code></label>
@@ -186,30 +170,10 @@
                     maxlength: 100
                 },
                 project_type: 'required',
-                client_company_name: {
+                customer_id: {
                     required:function() {
                         return $("#project_type").val() === 'Client';
-                    },
-                    maxlength: 100
-                },
-                contact_person: {
-                    required:function() {
-                        return $("#project_type").val() === 'Client';
-                    },
-                    maxlength: 100
-                },
-                phone_number: {
-                    required:function() {
-                        return $("#project_type").val() === 'Client';
-                    },
-                    maxlength: 100
-                },
-                email: {
-                    required:function() {
-                        return $("#project_type").val() === 'Client';
-                    },
-                    maxlength: 100,
-                    email: true
+                    }
                 },
                 project_time_duration: {
                     required: true,
@@ -229,22 +193,8 @@
                 project_type: {
                     required: "Please select project type."
                 },
-                client_company_name: {
-                    required: "Please input client company name.",
-                    maxlength: "Please input not more than 100 characters."
-                },
-                contact_person: {
-                    required: "Please input contact person name.",
-                    maxlength: "Please input not more than 100 characters."
-                },
-                phone_number: {
-                    required: "Please input client's phone number.",
-                    maxlength: "Please input not more than 100 characters."
-                },
-                email: {
-                    required: "Please input client's email address.",
-                    maxlength: "Please input not more than 100 characters.",
-                    email: "Please input valid email"
+                customer_id: {
+                    required: "Please select customer."
                 },
                 project_time_duration: {
                     required: "Please input project time duration.",

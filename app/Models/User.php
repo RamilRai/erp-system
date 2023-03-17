@@ -102,11 +102,14 @@ class User extends Authenticatable
             $user->first_name = Str::title($freshData['first_name']);
             $user->username = $freshData['username'];
             $user->phone_number = $freshData['phone_number'];
-            if ($freshData['id'] == null || $freshData['email'] != $user->email) {
-                $user->otp = rand(000000, 999999);
+            $user->email = $freshData['email'];
+            if ($freshData['id'] == null) {
                 Mail::to($freshData[('email')])->send(new UserMail($user));
             }
-            $user->email = $freshData['email'];
+            $checkOldMail = User::where('id', $post['id'])->first()->email;
+            if ($freshData['email'] != $checkOldMail) {
+                $user->first_login = NULL;
+            }
             if ($freshData['id'] == null && $freshData['updateProfile'] == 'N') {
                 $user->password = Hash::make('password');
                 $user->default_password = Hash::make('ERP$oftware@2023#');

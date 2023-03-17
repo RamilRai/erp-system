@@ -42,6 +42,7 @@
                                         <h5 class="nk-block-title">Enter OTP</h5>
                                     </div>
                                 </div><!-- .nk-block-head -->
+                                <div class="errorMessage">@include('layouts.include.alertMessage')</div>
 
                                 @if (Session::has('message'))   
                                     <div class="alert alert-danger alert-dismissible fade show text-center errorMessage" role="alert">

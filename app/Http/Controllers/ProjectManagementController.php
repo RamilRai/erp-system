@@ -37,6 +37,7 @@ class ProjectManagementController extends Controller
         $data = [];
         $data['projectLeader'] = DB::table('profiles')->where('status', 'Y')->get();
         $data['teamMembers'] = DB::table('profiles as P')->join('user_roles as UR', 'P.user_id', '=', 'UR.user_id')->where(['role_id'=>3, 'P.status'=>'Y', 'UR.status'=>'Y'])->get();
+        $data['customers'] = DB::table('customers')->where('status', 'Y')->get();
         if (!empty($post['id'])) {
             $data['projectManagement'] = ProjectManagement::where(['id'=>$post['id'], 'status'=>'Y'])->first();
             $data['assignedTeamMembers'] = json_decode($data['projectManagement']->assign_team_members);
@@ -48,8 +49,8 @@ class ProjectManagementController extends Controller
     public function projectManagementSubmit(ProjectManagementRequest $request)
     {
         try {
-            $post = $request->only(['_token', 'id', 'project_name', 'pdf', 'project_type', 'client_company_name', 'contact_person',
-                    'phone_number', 'email', 'project_time_duration', 'start_date_bs', 'start_date_ad', 'end_date_bs', 'end_date_ad', 'project_lead_by', 'assign_team_members', 'project_status']);
+            $post = $request->only(['_token', 'id', 'project_name', 'pdf', 'project_type', 'customer_id', 'project_time_duration',
+                    'start_date_bs', 'start_date_ad', 'end_date_bs', 'end_date_ad', 'project_lead_by', 'assign_team_members', 'project_status']);
 
             $this->message = $post['id'] == null ? "Project Management Information Submitted Successfully." : "Project Management Information Updated Successfully.";
 
