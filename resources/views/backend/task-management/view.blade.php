@@ -37,11 +37,11 @@
                     </tr>
                     <tr>
                         <th scope="row">Task Start Date</th>
-                        <td>{{$result->task_start_date}} B.S  ({{$result->task_start_date_ad}} A.D)</td>
+                        <td>{{$result->task_start_date_bs}} B.S  ({{$result->task_start_date_ad}} A.D)</td>
                     </tr>
                     <tr>
                         <th scope="row">Task End Date</th>
-                        <td>{{$result->task_end_date}} B.S  ({{$result->task_end_date_ad}} A.D)</td>
+                        <td>{{$result->task_end_date_bs}} B.S  ({{$result->task_end_date_ad}} A.D)</td>
                     </tr>
                     <tr>
                         <th scope="row">Task Priority</th>

@@ -52,20 +52,12 @@
                         <td>{{$result->project_time_duration}}</td>
                     </tr>
                     <tr>
-                        <th scope="row">Start Date (BS)</th>
-                        <td>{{$result->start_date}}</td>
+                        <th scope="row">Start Date</th>
+                        <td>{{$result->start_date_bs}} B.S ({{$result->start_date_ad}} A.D)</td>
                     </tr>
                     <tr>
-                        <th scope="row">Start Date (AD)</th>
-                        <td>{{$result->start_date_ad}}</td>
-                    </tr>
-                    <tr>
-                        <th scope="row">End Date (BS)</th>
-                        <td>{{$result->end_date}}</td>
-                    </tr>
-                    <tr>
-                        <th scope="row">End Date (AD)</th>
-                        <td>{{$result->end_date_ad}}</td>
+                        <th scope="row">End Date</th>
+                        <td>{{$result->end_date_bs}} B.S ({{$result->end_date_ad}} A.D)</td>
                     </tr>
                     <tr>
                         <th scope="row">Project Lead By</th>
