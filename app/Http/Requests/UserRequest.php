@@ -27,7 +27,7 @@ class UserRequest extends FormRequest
         $post = $request->only(['id', 'first_name', 'last_name', 'permanent_address', 'temporary_address',
                                 'email', 'phone_number', 'username', 'profile', 'updateProfile', 'gender', 'dob_bs', 'recruited_date_bs', 'department_id', 'documents']);
         $userid = $post['id'];
-        
+
         $rules['first_name'] = 'required|max:50';
         $rules['middle_name'] = 'max:50';
         $rules['last_name'] = 'required|max:50';
@@ -37,7 +37,8 @@ class UserRequest extends FormRequest
         $rules['username'] = 'required|max:50';
         if ($post['id'] == null) {
             $rules['profile'] = 'required';
-            $rules['email'] = 'required|email|max:50|unique:users,email';
+            $rules['email'] = 'required';
+            // $rules['email'] = 'required|email|max:50|unique:users,email';
         }else{
             $rules['email'] = 'required|email|max:50|unique:users,email,'.$userid.',id';
             $rules['id'] = 'integer'; //used but not worked.

@@ -220,7 +220,7 @@
             //================== view data end ==================
 
             //================== change lead status start ==================
-            $(document).on('click', '.changeLeadStatus', function (e) {
+            $(document).on('change', '.changeLeadStatus', function (e) {
                 e.preventDefault();
                 var value = $(this).val();
                 var id = $(this).data('id');

@@ -17,11 +17,14 @@ class DepartmentSeeder extends Seeder
     {
         DB::table('departments')->insert([
             ['department_name' => 'Administrative'],
-            ['department_name' => 'Back-end'],
-            ['department_name' => 'Front-end'],
-            ['department_name' => 'Graphics'],
-            ['department_name' => 'Support'],
-            ['department_name' => 'Finance']
+            ['department_name' => 'Finance'],
+            ['department_name' => 'Human Resource'],
+            ['department_name' => 'Customer Support'],
+            ['department_name' => 'Marketing & Sales'],
+            ['department_name' => 'Backend'],
+            ['department_name' => 'Frontend'],
+            ['department_name' => 'UI/UX & Graphics'],
+            ['department_name' => 'Mobile App'],
         ]);
     }
 }

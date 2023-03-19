@@ -128,15 +128,15 @@ class ProjectManagementController extends Controller
                 $status = '<span class="badge" style="background: #FF0000;">Cancelled</span>';
             }
             $array[$i]["projectStatus"] = $status;
-            $array[$i]["changeProjectStatus"] = '<select>
-                                                    <option class="changeProjectStatus" data-id="' . $row->id .  '" value="Not Started Yet" ' .($row->project_status == "Not Started Yet" ? 'selected' : ''). '>Not Started Yet</option>
-                                                    <option class="changeProjectStatus" data-id="' . $row->id .  '" value="On Progress" '.($row->project_status == "On Progress" ? 'selected' : ''). '>On Progress</option>
-                                                    <option class="changeProjectStatus" data-id="' . $row->id .  '" value="Testing" '.($row->project_status == "Testing" ? 'selected' : ''). '>Testing</option>
-                                                    <option class="changeProjectStatus" data-id="' . $row->id .  '" value="Bug Fixing" '.($row->project_status == "Bug Fixing" ? 'selected' : ''). '>Bug Fixing</option>
-                                                    <option class="changeProjectStatus" data-id="' . $row->id .  '" value="Completed" '.($row->project_status == "Completed" ? 'selected' : ''). '>Completed</option>
-                                                    <option class="changeProjectStatus" data-id="' . $row->id .  '" value="Dropped" '.($row->project_status == "Dropped" ? 'selected' : ''). '>Dropped</option>
-                                                    <option class="changeProjectStatus" data-id="' . $row->id .  '" value="Hold" '.($row->project_status == "Hold" ? 'selected' : ''). '>Hold</option>
-                                                    <option class="changeProjectStatus" data-id="' . $row->id .  '" value="Cancelled" '.($row->project_status == "Cancelled" ? 'selected' : ''). '>Cancelled</option>
+            $array[$i]["changeProjectStatus"] = '<select class="changeProjectStatus" data-id="'.$row->id.'" >
+                                                    <option value="Not Started Yet" ' .($row->project_status == "Not Started Yet" ? 'selected' : ''). '>Not Started Yet</option>
+                                                    <option value="On Progress" '.($row->project_status == "On Progress" ? 'selected' : ''). '>On Progress</option>
+                                                    <option value="Testing" '.($row->project_status == "Testing" ? 'selected' : ''). '>Testing</option>
+                                                    <option value="Bug Fixing" '.($row->project_status == "Bug Fixing" ? 'selected' : ''). '>Bug Fixing</option>
+                                                    <option value="Completed" '.($row->project_status == "Completed" ? 'selected' : ''). '>Completed</option>
+                                                    <option value="Dropped" '.($row->project_status == "Dropped" ? 'selected' : ''). '>Dropped</option>
+                                                    <option value="Hold" '.($row->project_status == "Hold" ? 'selected' : ''). '>Hold</option>
+                                                    <option value="Cancelled" '.($row->project_status == "Cancelled" ? 'selected' : ''). '>Cancelled</option>
                                                 </select>';
 
             // insert actions icons

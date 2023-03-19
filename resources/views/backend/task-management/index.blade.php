@@ -245,8 +245,8 @@
             //================== delete data end ==================
 
             //================== change task status start ==================
-            $(document).on('click', '.changeTaskStatus', function (e) {
-                e.preventDefault();
+            $(document).off('change', '.changeTaskStatus');
+            $(document).on('change', '.changeTaskStatus', function () {
                 var value = $(this).val();
                 var id = $(this).data('id');
                 var url = '{{route('change.task.status')}}';

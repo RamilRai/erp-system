@@ -16,9 +16,9 @@ class ProfileSeeder extends Seeder
     public function run()
     {
         DB::table('profiles')->insert([
-            ['user_id' => '1', 'first_name' => 'Super Admin', 'email' => 'superadmin@admin.com'],
-            ['user_id' => '2', 'first_name' => 'Technical Person', 'email' => 'technicalperson@admin.com'],
-            ['user_id' => '3', 'first_name' => 'Admin', 'email' => 'admin@admin.com']
+            ['user_id' => '1', 'first_name' => 'Admin', 'email' => 'admin@admin.com'],
+            ['user_id' => '2', 'first_name' => 'Project Manager', 'email' => 'projectmanager@admin.com'],
+            ['user_id' => '3', 'first_name' => 'User', 'email' => 'user@admin.com']
         ]);
     }
 }

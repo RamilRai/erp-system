@@ -37,7 +37,7 @@ Route::controller(AdminController::class)->group(function(){
 
 Route::controller(AdminController::class)->middleware(['auth'])->group(function(){
     Route::get('/superadmin/dashboard', 'superadmindashboard')->name('superadmin.dashboard');
-    Route::get('/technical/dashboard', 'technicaldashboard')->name('technical.dashboard');
+    Route::get('/projectmanager/dashboard', 'projectmanagerdashboard')->name('projectmanager.dashboard');
     Route::get('/admin/dashboard', 'admindashboard')->name('admin.dashboard');
 
     // profile start

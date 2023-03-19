@@ -18,29 +18,26 @@ class UserSeeder extends Seeder
     {
         DB::table('users')->insert([
             [
-                'first_name' => 'Super Admin',
-                'username' => 'superadmin',
-                'phone_number' => '7894561235',
-                'email' => 'superadmin@admin.com',
-                'default_password' => Hash::make('ERP$oftware@2023#'),
-                'password' => Hash::make('password'),
-                'first_login' => now()
-            ],
-            [
-                'first_name' => 'Technical Person',
-                'username' => 'technicalperson',
-                'phone_number' => '6894561230',
-                'email' => 'technicalperson@admin.com',
-                'default_password' => Hash::make('ERP$oftware@2023#'),
-                'password' => Hash::make('password'),
-                'first_login' => now()
-            ],
-            [
                 'first_name' => 'Admin',
                 'username' => 'admin',
-                'phone_number' => '5894561230',
+                'phone_number' => '9800000000',
                 'email' => 'admin@admin.com',
-                'default_password' => Hash::make('ERP$oftware@2023#'),
+                'password' => Hash::make('password'),
+                'first_login' => now()
+            ],
+            [
+                'first_name' => 'Project Manager',
+                'username' => 'projectmanager',
+                'phone_number' => '9800000000',
+                'email' => 'projectmanager@admin.com',
+                'password' => Hash::make('password'),
+                'first_login' => now()
+            ],
+            [
+                'first_name' => 'User',
+                'username' => 'user',
+                'phone_number' => '9800000000',
+                'email' => 'user@admin.com',
                 'password' => Hash::make('password'),
                 'first_login' => now()
             ],

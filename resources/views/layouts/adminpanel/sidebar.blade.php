@@ -9,7 +9,7 @@
             @php
                 $userRole = App\Models\UserRole::where('user_id', Auth::user()->id)->first();
             @endphp
-            <a href="@if($userRole->role_id == 1){{route('superadmin.dashboard')}}@elseif($userRole->role_id == 2){{route('technical.dashboard')}}@else{{route('admin.dashboard')}}@endif" class="logo-link nk-sidebar-logo">
+            <a href="@if($userRole->role_id == 1){{route('superadmin.dashboard')}}@elseif($userRole->role_id == 2){{route('projectmanager.dashboard')}}@else{{route('admin.dashboard')}}@endif" class="logo-link nk-sidebar-logo">
                 <img class="logo-light logo-img" srcset="{{asset('backend/images/logo2x.png')}} 2x" alt="logo">
                 <img class="logo-dark logo-img" srcset="{{asset('backend/images/logo-dark2x.png')}} 2x" alt="logo-dark">
             </a>

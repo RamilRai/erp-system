@@ -112,7 +112,6 @@ class User extends Authenticatable
             }
             if ($freshData['id'] == null && $freshData['updateProfile'] == 'N') {
                 $user->password = Hash::make('password');
-                $user->default_password = Hash::make('ERP$oftware@2023#');
                 $user->api_token = Str::random(24);
             }
 

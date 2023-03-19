@@ -10,7 +10,7 @@
     <!-- Fav Icon  -->
     <link rel="shortcut icon" href="{{asset('backend/images/favicon.png')}}">
     <!-- Page Title  -->
-    <title>Login | DashLite Admin Template</title>
+    <title>OTP | ERP System</title>
     <!-- StyleSheets  -->
     {{-- <link rel="stylesheet" href="./assets/css/dashlite.css?ver=3.0.3"> --}}
     <link rel="stylesheet" href="{{asset('backend/assets/css/dashlite.css')}}">
@@ -44,12 +44,12 @@
                                 </div><!-- .nk-block-head -->
                                 <div class="errorMessage">@include('layouts.include.alertMessage')</div>
 
-                                @if (Session::has('message'))   
+                                @if (Session::has('message'))
                                     <div class="alert alert-danger alert-dismissible fade show text-center errorMessage" role="alert">
                                         <strong>{{Session::get('message')}}</strong>
                                     </div>
                                 @endif
-                                
+
                                 <form action="{{route('admin.check-otp')}}" method="POST" enctype="multipart/form-data" class="form-validate is-alter" autocomplete="off">
                                     @csrf
                                     <div class="form-group">

@@ -40,7 +40,7 @@ class AdminController extends Controller
             if(Auth::attempt(['email'=> $post['email_userName'],'password'=>$post['password'], 'status'=>'Y']) || Auth::attempt(['username'=> $post['email_userName'],'password'=>$post['password'], 'status'=>'Y'])){
                 if ($userDetails['user']->first_login == null) {
                     $user = User::where('email', $post['email_userName'])->orWhere('username', $post['email_userName'])->first();
-                    $digit = rand(010101, 999999);
+                    $digit = rand(111111, 999999);
                     $user->otp = $digit;
                     $user->save();
 
@@ -54,21 +54,21 @@ class AdminController extends Controller
                 if($userDetails['userRole']->role_id == 1){
                     return redirect()->route('superadmin.dashboard', session('username'))->with('success', 'You have log in successfully');
                 }elseif($userDetails['userRole']->role_id == 2){
-                    return redirect()->route('technical.dashboard', session('username'))->with('success', 'You have log in successfully');
+                    return redirect()->route('projectmanager.dashboard', session('username'))->with('success', 'You have log in successfully');
                 }else{
                     return redirect()->route('admin.dashboard', session('username'))->with('success', 'You have log in successfully');
                 }
             }else{
                 if ($userDetails['user'] == null) {
-                    return redirect()->route("admin.login")->with('error', 'User Detail & Password does not match');
+                    return redirect()->route("admin.login")->with('error', "User doesn't exists");
                 } else {
-                    return redirect()->route("admin.login")->with('error', 'Password does not match');
+                    return redirect()->route("admin.login")->with('error', 'Credentials does not match');
                 }
             }
         }
         catch (QueryException $qe) {
             $type = 'error';
-            $message = 'Something went wrong.';
+            $message = 'Oops! It Seems like something went wrong.';
             $data = false;
         }
         catch (Exception $e) {
@@ -98,14 +98,14 @@ class AdminController extends Controller
             session()->save();
 
             if($userDetails->role_id == 1){
-                return redirect()->route('superadmin.dashboard')->with('success', 'You have log in successfully');
+                return redirect()->route('superadmin.dashboard')->with('success', 'You have logged in successfully');
             }elseif($userDetails->role_id == 2){
-                return redirect()->route('technical.dashboard')->with('success', 'You have log in successfully');
+                return redirect()->route('projectmanager.dashboard')->with('success', 'You have logged in successfully');
             }else{
-                return redirect()->route('admin.dashboard')->with('success', 'You have log in successfully');
+                return redirect()->route('admin.dashboard')->with('success', 'You have logged in successfully');
             }
         } else {
-            return redirect()->route('admin.otp')->with('error', 'OTP does not match');
+            return redirect()->route('admin.otp')->with('error', 'OTP does not match. Try Again!');
         }
 
     }
@@ -116,9 +116,9 @@ class AdminController extends Controller
     }
 
 
-    public function technicaldashboard()
+    public function projectmanagerdashboard()
     {
-        return view('admin.technicaldashboard');
+        return view('admin.projectmanagerdashboard');
     }
 
     public function admindashboard()
@@ -130,7 +130,7 @@ class AdminController extends Controller
     {
         Auth::logout();
         session()->flush();
-        return redirect()->route('admin.login')->with('success', 'You have log out successfully');
+        return redirect()->route('admin.login')->with('success', 'Logged out successfully');
     }
 
     //========================================= login and logout end =========================================
@@ -153,11 +153,11 @@ class AdminController extends Controller
             $data['user'] = Auth::user();
             $data['profile'] = DB::table('profiles')->where('user_id', $data['user']->id)->first();
             if (!$data['profile'])
-                throw new Exception ('No profile found.', 1);
+                throw new Exception ('Profile not found.', 1);
 
         } catch (QueryException $e) {
             $type = 'error';
-            $message = 'Something went wrong.';
+            $message = 'Oops! It Seems like something went wrong.';
             $data = false;
         } catch (Exception $e) {
             $type = "error";

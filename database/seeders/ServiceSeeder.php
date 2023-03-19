@@ -16,8 +16,9 @@ class ServiceSeeder extends Seeder
     public function run()
     {
         DB::table('services')->insert([
-            ['service_type' => 'Website'],
+            ['service_type' => 'Website Devlopment'],
             ['service_type' => 'Web Application'],
+            ['service_type' => 'Graphics Design'],
             ['service_type' => 'Digital Marketing']
         ]);
     }

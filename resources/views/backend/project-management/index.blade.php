@@ -232,8 +232,8 @@
             //================== delete data end ==================
 
             //================== change project status start ==================
-            $(document).on('click', '.changeProjectStatus', function (e) {
-                e.preventDefault();
+            $(document).off('change', '.changeProjectStatus');
+            $(document).on('change', '.changeProjectStatus', function () {
                 var value = $(this).val();
                 var id = $(this).data('id');
                 var url = '{{route('change.project.status')}}';

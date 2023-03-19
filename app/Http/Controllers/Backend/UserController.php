@@ -70,19 +70,23 @@ class UserController extends Controller
         try {
             $post = $request->only(['_token', 'id', 'first_name', 'middle_name', 'last_name', 'permanent_address', 'temporary_address',
                     'email', 'phone_number', 'username', 'profile', 'updateProfile', 'gender', 'dob_bs', 'dob_ad', 'blood_group', 'recruited_date_bs', 'recruited_date_ad', 'department_id', 'documents']);
-            
-            $this->message = $post['id'] == null ? "User Information Submitted Successfully." : "User Information Updated Successfully.";
 
+            $this->message = $post['id'] == null ? "User Information Submitted Successfully." : "User Information Updated Successfully.";
+            // dd($request->all());
             DB::beginTransaction();
 
             // insert into users table-1
             $user = $post['id'] == null ? new User : User::where('id', $post['id'])->first();
 
-            if ($post['email'] != $user->email) {
-                $this->message = "Verify Email While Logging In Again.";
+            // dd($user->email);
+            if(isset($user->email)){
+                if ($post['email'] != $user->email) {
+                    $this->message = "Verify Email While Logging In Again.";
+                }
             }
 
             $storeUser = User::storeUser($post, $user);
+            dd($storeUser);
 
             // insert into profiles table-2
             $profile = $post['id'] == null ? new Profile : Profile::where('id', $post['id'])->first();
@@ -107,7 +111,7 @@ class UserController extends Controller
                         } else {
                             $this->uploadImage($image, $folder, $fileName);
                         }
-                        
+
                         $arrayDocuments[] = $fileName;
                     }
                     if ($post['id'] == null) {
@@ -117,10 +121,10 @@ class UserController extends Controller
                         $oldData = json_decode($fetchOldData->documents);
                         $profile->documents = json_encode(array_merge($oldData, $arrayDocuments));
                     }
-                    
+
                 }
             }
-            
+
             $storeProfile = Profile::storeProfile($post, $profile);
 
             // insert into user_roles table-3
@@ -182,7 +186,7 @@ class UserController extends Controller
     {
         $post = $request->all();
         $data['result'] = User::viewUserData($post);
-        
+
         return view('backend.users.view', $data);
     }
 

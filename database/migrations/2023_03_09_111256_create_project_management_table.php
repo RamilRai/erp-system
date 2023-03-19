@@ -15,16 +15,16 @@ return new class extends Migration
     {
         Schema::create('project_management', function (Blueprint $table) {
             $table->id();
-            $table->string('project_name', 100)->nullable();
+            $table->string('project_name')->nullable();
             $table->string('pdf')->nullable();
             $table->string('project_type')->nullable();
-            $table->foreignId('customer_id', 100)->constrained('customers', 'id')->cascadeOnDelete()->cascadeOnUpdate()->nullable();
-            $table->string('project_time_duration', 100)->nullable();
+            $table->foreignId('customer_id')->nullable();
+            $table->string('project_time_duration')->nullable();
             $table->date('start_date_bs')->nullable();
             $table->date('start_date_ad')->nullable();
             $table->date('end_date_bs')->nullable();
             $table->date('end_date_ad')->nullable();
-            $table->foreignId('project_lead_by')->constrained('users', 'id')->cascadeOnDelete()->cascadeOnUpdate();
+            $table->foreignId('project_lead_by')->nullable();
             $table->json('assign_team_members')->nullable();
             $table->string('project_status')->nullable();
             $table->enum('status', ['Y', 'N'])->default('Y');

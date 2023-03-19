@@ -16,12 +16,12 @@ return new class extends Migration
         Schema::create('profiles', function (Blueprint $table) {
             $table->id();
             $table->foreignId('user_id')->constrained('users', 'id')->cascadeOnDelete()->cascadeOnUpdate();
-            $table->string('first_name', 50)->nullable();
-            $table->string('middle_name', 50)->nullable();
-            $table->string('last_name', 50)->nullable();
-            $table->string('permanent_address', 100)->nullable();
-            $table->string('temporary_address', 100)->nullable();
-            $table->string('email', 50)->nullable();
+            $table->string('first_name')->nullable();
+            $table->string('middle_name')->nullable();
+            $table->string('last_name')->nullable();
+            $table->string('permanent_address')->nullable();
+            $table->string('temporary_address')->nullable();
+            $table->string('email')->nullable();
             $table->string('phone_number')->nullable();
             $table->string('profile')->nullable();
             $table->enum('gender', ['Male', 'Female', 'Other'])->nullable();

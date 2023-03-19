@@ -94,10 +94,10 @@ class LeadController extends Controller
             }
             $array[$i]["leadStatus"] = '<p>'.$status.'</p>';
 
-            $array[$i]["changeLeadStatus"]  = '<select>
-                                                <option class="changeLeadStatus" data-id="' . $row->id .  '" value="Pending" ' .($row->lead_status == "Pending" ? 'selected' : ''). '>Pending</option>
-                                                <option class="changeLeadStatus" data-id="' . $row->id .  '" value="Active" '.($row->lead_status == "Active" ? 'selected' : ''). '>Active</option>
-                                                <option class="changeLeadStatus" data-id="' . $row->id .  '" value="Cancelled" '.($row->lead_status == "Cancelled" ? 'selected' : ''). '>Cancelled</option>
+            $array[$i]["changeLeadStatus"]  = '<select class="changeLeadStatus" data-id="' . $row->id .  '" >
+                                                <option value="Pending" ' .($row->lead_status == "Pending" ? 'selected' : ''). '>Pending</option>
+                                                <option value="Active" '.($row->lead_status == "Active" ? 'selected' : ''). '>Active</option>
+                                                <option value="Cancelled" '.($row->lead_status == "Cancelled" ? 'selected' : ''). '>Cancelled</option>
                                             </select>';
             // insert actions icons
             $action = '';
@@ -249,7 +249,7 @@ class LeadController extends Controller
             $this->message = "Call Log data fetched successfully";
 
             $this->response = CallLog::where('id', $post['id'])->first();
-            
+
             if (!$this->response) {
                 throw new Exception("Error Processing Request", 1);
             }

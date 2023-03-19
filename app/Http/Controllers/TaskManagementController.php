@@ -51,7 +51,7 @@ class TaskManagementController extends Controller
     public function ckeditorFileUpload(Request $request)
     {
         if($request->has('upload')){
-            $image = $request->file('upload');   
+            $image = $request->file('upload');
             $extension=$image->getClientOriginalExtension();
             $filename=time().'.'.$extension;
             $image->move('storage/task-management',$filename);
@@ -69,7 +69,7 @@ class TaskManagementController extends Controller
         try {
             $post = $request->only(['_token', 'projectId', 'assignedMembersId']);
             $this->message = "Team Members fetched successfully.";
-    
+
             $selectTeamMembers = DB::table('project_management')->select('assign_team_members')->where('id', $post['projectId'])->first();
             $teamMembersArray = json_decode($selectTeamMembers->assign_team_members);
             $teamMembers = DB::table('profiles')->select('id', 'first_name', 'middle_name', 'last_name')->whereIn('id', $teamMembersArray)->get();
@@ -100,7 +100,7 @@ class TaskManagementController extends Controller
         try {
             $post = $request->only(['_token', 'id', 'task_title', 'project_id', 'task_type', 'task_start_date_bs', 'task_start_date_ad', 'task_end_date_bs', 'task_end_date_ad',
                     'estimated_hour', 'priority', 'assigned_to', 'task_point', 'task_description', 'projectName']);
-            
+
             $this->message = $post['id'] == null ? "Task Management Information Submitted Successfully." : "Task Management Information Updated Successfully.";
 
             DB::beginTransaction();
@@ -178,15 +178,15 @@ class TaskManagementController extends Controller
                 $status = '<span class="badge" style="background: #FF0000;">Cancelled</span>';
             }
             $array[$i]["taskStatus"] = $status;
-            $array[$i]["changeTaskStatus"] = '<select>
-                                                    <option class="changeTaskStatus" data-id="' . $row->id .  '" hidden value="Not Started Yet" ' .($row->task_status == "Not Started Yet" ? 'selected' : ''). '>Not Started Yet</option>
-                                                    <option class="changeTaskStatus" data-id="' . $row->id .  '" value="On Progress" '.($row->task_status == "On Progress" ? 'selected' : ''). '>On Progress</option>
-                                                    <option class="changeTaskStatus" data-id="' . $row->id .  '" value="Testing" '.($row->task_status == "Testing" ? 'selected' : ''). '>Testing</option>
-                                                    <option class="changeTaskStatus" data-id="' . $row->id .  '" value="Bug Fixing" '.($row->task_status == "Bug Fixing" ? 'selected' : ''). '>Bug Fixing</option>
-                                                    <option class="changeTaskStatus" data-id="' . $row->id .  '" value="Cancelled" '.($row->task_status == "Cancelled" ? 'selected' : ''). '>Cancelled</option>
-                                                    <option class="changeTaskStatus" data-id="' . $row->id .  '" value="Hold" '.($row->task_status == "Hold" ? 'selected' : ''). '>Hold</option>
-                                                    <option class="changeTaskStatus" data-id="' . $row->id .  '" value="Completed" '.($row->task_status == "Completed" ? 'selected' : ''). '>Completed</option>
-                                                    <option class="changeTaskStatus" data-id="' . $row->id .  '" value="Verified" '.($row->task_status == "Verified" ? 'selected' : ''). '>Verified</option>
+            $array[$i]["changeTaskStatus"] = '<select class="changeTaskStatus" data-id="'.$row->id.'">
+                                                    <option hidden value="Not Started Yet" ' .($row->task_status == "Not Started Yet" ? 'selected' : ''). '>Not Started Yet</option>
+                                                    <option value="On Progress" '.($row->task_status == "On Progress" ? 'selected' : ''). '>On Progress</option>
+                                                    <option value="Testing" '.($row->task_status == "Testing" ? 'selected' : ''). '>Testing</option>
+                                                    <option value="Bug Fixing" '.($row->task_status == "Bug Fixing" ? 'selected' : ''). '>Bug Fixing</option>
+                                                    <option value="Cancelled" '.($row->task_status == "Cancelled" ? 'selected' : ''). '>Cancelled</option>
+                                                    <option value="Hold" '.($row->task_status == "Hold" ? 'selected' : ''). '>Hold</option>
+                                                    <option value="Completed" '.($row->task_status == "Completed" ? 'selected' : ''). '>Completed</option>
+                                                    <option value="Verified" '.($row->task_status == "Verified" ? 'selected' : ''). '>Verified</option>
                                                 </select>';
 
             // insert actions icons
@@ -276,9 +276,9 @@ class TaskManagementController extends Controller
             //update task status
             if ($post['value'] == 'On Progress' || $post['value'] == 'Testing' || $post['value'] == 'Bug Fixing') {
                 $getCurrentTask->task_status = $post['value'];
-    
+
                 $result = $getCurrentTask->save();
-                
+
                 if (!$result){
                     throw new Exception ("Couldn't process request.", 1);
                 }
@@ -309,7 +309,7 @@ class TaskManagementController extends Controller
     {
         try {
             $post = $request->only(['_token', 'id', 'documents', 'feedback']);
-            
+
             $this->message = "Task Status Changed And Documents For Current Task Submitted Successfully.";
 
             DB::beginTransaction();
@@ -326,7 +326,7 @@ class TaskManagementController extends Controller
                 } else {
                     $this->uploadImage($image, $folder, $fileName);
                 }
-                
+
                 $arrayDocuments[] = $fileName;
             }
             $taskManagement->documents = json_encode($arrayDocuments);
@@ -360,7 +360,7 @@ class TaskManagementController extends Controller
     {
         try {
             $post = $request->only(['_token', 'id', 'achieved_point', 'response_from_supervisor']);
-            
+
             $this->message = "Task Status Changed And Marks For Current Task Submitted Successfully.";
 
             DB::beginTransaction();
@@ -395,7 +395,7 @@ class TaskManagementController extends Controller
     {
         try {
             $post = $request->only(['_token', 'id', 'value', 'feedback']);
-            
+
             $this->message = "Task Status Changed And Remarks For Current Task Submitted Successfully.";
 
             DB::beginTransaction();
