@@ -18,7 +18,7 @@ class ProjectManagement extends Model
 
     public function profiles()
     {
-        return $this->belongsTo(Profile::class, 'project_lead_by', 'id');
+        return $this->belongsTo(Profile::class, 'project_lead_by', 'user_id');
     }
 
     public function customer()
@@ -56,14 +56,19 @@ class ProjectManagement extends Model
         }
     }
 
-    public static function fetchProjectManagementInfo()
+    public static function fetchProjectManagementInfo($userID)
     {
         try {
             $get = $_GET;
             foreach ($get as $key => $value) {
                 $get[$key] = trim(strtolower(htmlspecialchars($get[$key], ENT_QUOTES)));
             }
-            $cond = " PM.status = 'Y'";
+            $cond = "  PM.status = 'Y' AND P.status = 'Y'";
+
+            if(!empty($userID)){
+                $userJson = '"'.$userID.'"';
+                $cond .= " AND project_lead_by = ".$userID." OR JSON_CONTAINS(assign_team_members, '[".$userJson."]', '$') ";
+            }
 
             if ($get['sSearch_1']) {
                 $cond .= "and lower(PM.project_name) like'%".$get['sSearch_1']."%'";
@@ -102,6 +107,8 @@ class ProjectManagement extends Model
             if ($limit > -1) {
                 $sql = $sql . ' limit ' . $limit . ' offset ' . $offset . '';
             }
+
+            // echo $sql;exit;
 
             $result = \DB::select($sql);
 

@@ -12,6 +12,7 @@ use App\Traits\ImageProcessTrait;
 use Carbon\Carbon;
 use Exception;
 use DB;
+use Auth;
 
 class TaskManagementController extends Controller
 {
@@ -26,7 +27,7 @@ class TaskManagementController extends Controller
     {
         $this->type = 'success';
         $this->message = '';
-        $this->reponse = false;
+        $this->response = false;
         $this->queryExceptionMessage = 'Something went wrong.';
     }
 
@@ -37,9 +38,23 @@ class TaskManagementController extends Controller
 
     public function taskManagementCreate(Request $request)
     {
-        $post = $request->only(['id', '_token']);
+        $userRole = \App\Models\UserRole::where('user_id', Auth::user()->id)->first();
+        $userRoleID = $userRole->role_id;
+        $userID = '';
+
+        $whereData = [
+            'status' => 'Y'
+        ];
+        if($userRoleID == 3){
+            $userID = Auth::user()->id;
+            $whereData['project_lead_by'] = $userID;
+        }
+        $post = $request->only(['id', 'projectid', '_token']);
+        if(!empty($post['projectid'])){
+            $whereData['id'] = $post['projectid'];
+        }
         $data = [];
-        $data['projectName'] = DB::table('project_management')->select('id', 'project_name')->where('status', 'Y')->get();
+        $data['projectName'] = DB::table('project_management')->select('id', 'project_name')->where($whereData)->get();
         if (!empty($post['id'])) {
             $data['taskManagement'] = TaskManagement::where(['id'=>$post['id'], 'status'=>'Y'])->first();
             $data['assignedTeamMembers'] = json_decode($data['taskManagement']->assigned_to);
@@ -72,17 +87,17 @@ class TaskManagementController extends Controller
 
             $selectTeamMembers = DB::table('project_management')->select('assign_team_members')->where('id', $post['projectId'])->first();
             $teamMembersArray = json_decode($selectTeamMembers->assign_team_members);
-            $teamMembers = DB::table('profiles')->select('id', 'first_name', 'middle_name', 'last_name')->whereIn('id', $teamMembersArray)->get();
+            $teamMembers = DB::table('profiles')->select('id', 'user_id', 'first_name', 'middle_name', 'last_name')->whereIn('user_id', $teamMembersArray)->get();
             $this->response = [];
             foreach ($teamMembers as $value) {
                 // to get selected value while editing start
                 $assignedMembers = json_decode($post['assignedMembersId']);
                 $selectMembers = '';
                 if ($post['assignedMembersId'] != null) {
-                    $selectMembers = in_array($value->id, $assignedMembers) ? "selected = 'selected'" : "";
+                    $selectMembers = in_array($value->user_id, $assignedMembers) ? "selected = 'selected'" : "";
                 }
                 // to get selected value while editing end
-                $this->response[] = '<option value="'.$value->id.'" '. $selectMembers .'>'.$value->first_name . ' ' . $value->middle_name . ' ' . $value->last_name .'</option>';
+                $this->response[] = '<option value="'.$value->user_id.'" '. $selectMembers .'>'.$value->first_name . ' ' . $value->middle_name . ' ' . $value->last_name .'</option>';
             }
 
         } catch (QueryException $qe) {
@@ -116,7 +131,6 @@ class TaskManagementController extends Controller
                 $ticketNumber = $firstLetters . '-' . $countCurrentProjectTask;
                 $taskManagement->ticket_number = $ticketNumber;
             }
-
             $sendDataToModel = TaskManagement::storeData($post, $taskManagement);
 
             DB::commit();
@@ -134,7 +148,15 @@ class TaskManagementController extends Controller
 
     public function taskManagementFetch()
     {
-        $data = TaskManagement::fetchTaskManagementInfo();
+        $userRole = \App\Models\UserRole::where('user_id', Auth::user()->id)->first();
+        $userRoleID = $userRole->role_id;
+        $userID = '';
+
+        if($userRoleID == 3){
+            $userID = Auth::user()->id;
+        }
+
+        $data = TaskManagement::fetchTaskManagementInfo($userID);
         $filtereddata = (@$data["totalfilteredrecs"] > 0 ? $data["totalfilteredrecs"] : @$data["totalrecs"]);
         $totalrecs = @$data["totalrecs"];
         unset($data["totalfilteredrecs"]);
@@ -142,7 +164,7 @@ class TaskManagementController extends Controller
         $i = 0;
         $array = array();
         foreach ($data as $row) {
-            $array[$i]["sn"] = $i +1;
+            $array[$i]["ticketnumber"] = '#'.$row->ticket_number;
             $array[$i]["taskTitle"] = $row->task_title;
             $array[$i]["projectName"] = $row->project_name;
             $array[$i]["taskType"] = $row->task_type;
@@ -178,8 +200,10 @@ class TaskManagementController extends Controller
                 $status = '<span class="badge" style="background: #FF0000;">Cancelled</span>';
             }
             $array[$i]["taskStatus"] = $status;
-            $array[$i]["changeTaskStatus"] = '<select class="changeTaskStatus" data-id="'.$row->id.'">
-                                                    <option hidden value="Not Started Yet" ' .($row->task_status == "Not Started Yet" ? 'selected' : ''). '>Not Started Yet</option>
+
+            if($row->project_lead_by == $userID || $userRoleID == 1 || $userRoleID == 2){
+                $array[$i]["changeTaskStatus"] = '<select class="changeTaskStatus" data-id="'.$row->id.'">
+                                                    <option value="Not Started Yet" ' .($row->task_status == "Not Started Yet" ? 'selected' : ''). '>Not Started Yet</option>
                                                     <option value="On Progress" '.($row->task_status == "On Progress" ? 'selected' : ''). '>On Progress</option>
                                                     <option value="Testing" '.($row->task_status == "Testing" ? 'selected' : ''). '>Testing</option>
                                                     <option value="Bug Fixing" '.($row->task_status == "Bug Fixing" ? 'selected' : ''). '>Bug Fixing</option>
@@ -188,13 +212,57 @@ class TaskManagementController extends Controller
                                                     <option value="Completed" '.($row->task_status == "Completed" ? 'selected' : ''). '>Completed</option>
                                                     <option value="Verified" '.($row->task_status == "Verified" ? 'selected' : ''). '>Verified</option>
                                                 </select>';
+            }else{
+                $isHiddenStart = '';
+                $isHiddenProgress = '';
+                $isHiddenCompleted = '';
+                $isHide = '';
+                if($row->task_status == 'Not Started Yet'){
+                    $isHiddenStart = '';
+                    $isHiddenProgress = '';
+                    $isHiddenCompleted = 'hidden';
+                }elseif($row->task_status == 'Completed'){
+                    $isHiddenStart = 'hidden';
+                    $isHiddenProgress = 'hidden';
+                    $isHiddenCompleted = '';
+                    $isHide = 'Y';
+                }elseif($row->task_status == 'Verified'){
+                    $isHiddenStart = 'hidden';
+                    $isHiddenProgress = 'hidden';
+                    $isHiddenCompleted = 'hidden';
+                    $isHide = 'Y';
+                }else{
+                    $isHiddenStart = 'hidden';
+                    $isHiddenProgress = '';
+                    $isHiddenCompleted = '';
+                }
+
+                if($isHide == 'Y'){
+                    $array[$i]["changeTaskStatus"] = '';
+                }else{
+
+                    $array[$i]["changeTaskStatus"] = '<select class="changeTaskStatus" data-id="'.$row->id.'">
+                                                        <option '.$isHiddenStart.' value="Not Started Yet" ' .($row->task_status == "Not Started Yet" ? 'selected' : ''). '>Not Started Yet</option>
+                                                        <option '.$isHiddenProgress.' value="On Progress" '.($row->task_status == "On Progress" ? 'selected' : ''). '>On Progress</option>
+                                                        <option '.$isHiddenProgress.' value="Testing" '.($row->task_status == "Testing" ? 'selected' : ''). '>Testing</option>
+                                                        <option '.$isHiddenProgress.' value="Bug Fixing" '.($row->task_status == "Bug Fixing" ? 'selected' : ''). '>Bug Fixing</option>
+                                                        <option '.$isHiddenProgress.' value="Cancelled" '.($row->task_status == "Cancelled" ? 'selected' : ''). '>Cancelled</option>
+                                                        <option '.$isHiddenProgress.' value="Hold" '.($row->task_status == "Hold" ? 'selected' : ''). '>Hold</option>
+                                                        <option '.$isHiddenCompleted.' value="Completed" '.($row->task_status == "Completed" ? 'selected' : ''). '>Completed</option>
+                                                    </select>';
+                }
+            }
+
+
 
             // insert actions icons
             $action = '';
-            // for edit
-            $action .= '<a href="javascript:;" title="Edit Data" class="tooltipdiv editTaskManagement" style="color:blue; font-size: 20px" data-id="' . $row->id .  '"><i class="fa-solid fa-pen-to-square"></i></a>';
-            // for delete
-            $action .= '<a href="javascript:;" title="Delete Data" class="tooltipdiv deleteTaskManagement px-1" style="color:red; font-size: 20px" data-id="' . $row->id .  '"><i class="fa-solid fa-trash-can"></i></a>';
+            if(($row->project_lead_by == $userID) || ($userRoleID == 1 || $userRoleID == 2)){
+                // for edit
+                $action .= '<a href="javascript:;" title="Edit Data" class="tooltipdiv editTaskManagement" style="color:blue; font-size: 20px" data-id="' . $row->id .  '" data-projectid="' . $row->projectid .  '"><i class="fa-solid fa-pen-to-square"></i></a>';
+                // for delete
+                $action .= '<a href="javascript:;" title="Delete Data" class="tooltipdiv deleteTaskManagement px-1" style="color:red; font-size: 20px" data-id="' . $row->id .  '"><i class="fa-solid fa-trash-can"></i></a>';
+            }
             // for show
             $action .= '<a href="javascript:;" title="View Data" class="tooltipdiv viewTaskManagement" style="color:green; font-size: 20px" data-id="' . $row->id .  '"><i class="fa-solid fa-eye"></i></a>';
             $array[$i]["action"] = $action;

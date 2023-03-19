@@ -10,7 +10,7 @@
             <div class="nk-content-body">
 
                 <div class="nk-block-head nk-block-head-sm">
-                    <div class="nk-block-between" style="margin: -4% -5% 0%">
+                    <div class="nk-block-between" style="margin: -4% -3% 0%">
                         <div class="nk-block-head-content">
                             <h3 class="nk-block-title page-title">Task Management</h3>
                         </div>
@@ -25,7 +25,7 @@
                         <table class="stripe hover" style="width:100%; padding-top: 1em;  padding-bottom: 1em;" id="taskManagementTable">
                             <thead>
                                 <tr class="nk-tb-item nk-tb-head">
-                                    <th class="whitespace-nowrap">S.No. </th>
+                                    <th class="whitespace-nowrap">Ticket No.</th>
                                     <th class="whitespace-nowrap">Task Title</th>
                                     <th class="whitespace-nowrap">Project Name</th>
                                     <th class="whitespace-nowrap">Task Type</th>
@@ -114,7 +114,7 @@
                 {"aTargets": [10,] }
                 ],
                 "aoColumns" : [
-                    {data:'sn'},
+                    {data:'ticketnumber'},
                     {data:'taskTitle'},
                     {data:'projectName'},
                     {data:'taskType'},
@@ -170,9 +170,10 @@
             $(document).on('click','.editTaskManagement',function(e){
                 e.preventDefault();
                 var id = $(this).data('id');
+                var projectid = $(this).data('projectid');
                 var url = '{{route('task-management.create')}}';
                 var _token = "{{csrf_token()}}";
-                var data = {id:id, _token:_token};
+                var data = {id:id, projectid:projectid, _token:_token};
                 $.post(url,data,function(response){
                     $('#loadTaskManagementModal .modal-content').html(response);
                     $('#taskManagementModalShow').css({"opacity": "1", "display": "block"});
@@ -264,7 +265,7 @@
                         $.post(url,data,function(response){
                             var result = JSON.parse(response);
                             console.log(result);
-                            if(result.type == 'success' && result.response == null){
+                            if(result.type == 'success' && result.response == false){
                                 Swal.fire({
                                     title: 'Changed!',
                                     text: result.message,

@@ -3,6 +3,7 @@
 namespace App\Http\Requests;
 
 use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Http\Request;
 
 class TaskManagementRequest extends FormRequest
 {
@@ -21,19 +22,24 @@ class TaskManagementRequest extends FormRequest
      *
      * @return array<string, mixed>
      */
-    public function rules()
+    public function rules(Request $request)
     {
-        return [
-            'task_title' => 'required|max:100',
-            'project_id' => 'required',
-            'task_type' => 'required',
-            'task_start_date_bs' => 'required|date',
-            'task_end_date_bs' => 'required|date|after:task_start_date_bs',
-            'estimated_hour' => 'required|max:100',
-            'priority' => 'required',
-            'assigned_to' => 'required',
-            'task_point' => 'required'
-        ];
+
+        $post = $request->all();
+
+        $rules['task_title'] = 'required|max:100';
+        if($post['id'] == null){
+            $rules['project_id'] = 'required';
+        }
+        $rules['task_type'] = 'required';
+        $rules['task_start_date_bs'] = 'required|date';
+        $rules['task_end_date_bs'] = 'required|date|after:task_start_date_bs';
+        $rules['estimated_hour'] = 'required|max:100';
+        $rules['priority'] = 'required';
+        $rules['assigned_to'] = 'required';
+        $rules['task_point'] = 'required';
+
+        return $rules;
     }
 
     public function messages()

@@ -29,7 +29,9 @@ class TaskManagement extends Model
             Arr::forget($post, 'assigned_to'); // to remove a given key value pair from an array
             $freshData = sanitizeData($post);
             $taskManagement->task_title = Str::title($freshData['task_title']);
-            $taskManagement->project_id = $freshData['project_id'];
+            if(isset($freshData['project_id'])){
+                $taskManagement->project_id = $freshData['project_id'];
+            }
             $taskManagement->task_type = $freshData['task_type'];
             $taskManagement->task_start_date_bs = $freshData['task_start_date_bs'];
             $taskManagement->task_start_date_ad = $freshData['task_start_date_ad'];
@@ -54,7 +56,7 @@ class TaskManagement extends Model
         }
     }
 
-    public static function fetchTaskManagementInfo()
+    public static function fetchTaskManagementInfo($userID)
     {
         try {
             $get = $_GET;
@@ -62,6 +64,11 @@ class TaskManagement extends Model
                 $get[$key] = trim(strtolower(htmlspecialchars($get[$key], ENT_QUOTES)));
             }
             $cond = " TM.status = 'Y'";
+
+            if(!empty($userID)){
+                $userJson = '"'.$userID.'"';
+                $cond .= " AND project_lead_by = ".$userID." OR JSON_CONTAINS(assigned_to, '[".$userJson."]', '$') ";
+            }
 
             if ($get['sSearch_2']) {
                 $cond .= "and lower(TM.project_type) like'%".$get['sSearch_2']."%'";
@@ -75,6 +82,9 @@ class TaskManagement extends Model
             $sql = "SELECT
                         COUNT(*) OVER() AS totalrecs,
                         TM.id,
+                        PM.id as projectid,
+                        PM.project_lead_by,
+                        TM.ticket_number,
                         TM.task_title,
                         PM.project_name,
                         TM.task_type,
@@ -95,7 +105,7 @@ class TaskManagement extends Model
             if ($limit > -1) {
                 $sql = $sql . ' limit ' . $limit . ' offset ' . $offset . '';
             }
-
+            // echo $sql;exit;
             $result = \DB::select($sql);
 
             $ndata = $result;

@@ -106,9 +106,11 @@ class User extends Authenticatable
             if ($freshData['id'] == null) {
                 Mail::to($freshData[('email')])->send(new UserMail($user));
             }
-            $checkOldMail = User::where('id', $post['id'])->first()->email;
-            if ($freshData['email'] != $checkOldMail) {
-                $user->first_login = NULL;
+            $checkOldMail = User::where('id', $post['id'])->first();
+            if(isset($checkOldMail->email)){
+                if ($freshData['email'] != $checkOldMail->email) {
+                    $user->first_login = NULL;
+                }
             }
             if ($freshData['id'] == null && $freshData['updateProfile'] == 'N') {
                 $user->password = Hash::make('password');

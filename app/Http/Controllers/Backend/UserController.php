@@ -86,7 +86,7 @@ class UserController extends Controller
             }
 
             $storeUser = User::storeUser($post, $user);
-            dd($storeUser);
+            // dd($storeUser);
 
             // insert into profiles table-2
             $profile = $post['id'] == null ? new Profile : Profile::where('id', $post['id'])->first();
@@ -133,10 +133,10 @@ class UserController extends Controller
             }
 
             DB::commit();
-        } catch (QueryException $qe) {
-            DB::rollback();
-            $this->type = 'error';
-            $this->message = $this->queryExceptionMessage;
+        // } catch (QueryException $qe) {
+        //     DB::rollback();
+        //     $this->type = 'error';
+        //     $this->message = $this->queryExceptionMessage;
         } catch (Exception $e) {
             DB::rollback();
             $this->type = 'error';

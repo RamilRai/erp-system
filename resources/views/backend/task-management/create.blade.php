@@ -121,7 +121,7 @@
     //================== ckeditor start ==================
     CKEDITOR.replace('task_description',{
         filebrowserUploadUrl: '{{route('taskManagement.ckeditor.fileupload',['_token' => csrf_token() ]) }}',
-        filebrowserUploadMethod: "form" 
+        filebrowserUploadMethod: "form"
     });
     //================== ckeditor end ==================
 
@@ -187,6 +187,11 @@
                     required: true,
                     maxlength: 100
                 },
+                project_id: {
+                    required: function(e){
+                        return $('#taskManagementId').val() == "";
+                    }
+                },
                 project_id: 'required',
                 task_type: 'required',
                 task_start_date_bs: 'required',
@@ -231,6 +236,7 @@
                 }
             }
         });
+        
         if ($('#taskManagementForm').valid()) {
             var formData = new FormData($('#taskManagementForm')[0]);
             formData.append('task_description', CKEDITOR.instances['task_description'].getData());

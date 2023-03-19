@@ -10,13 +10,15 @@
             <div class="nk-content-body">
 
                 <div class="nk-block-head nk-block-head-sm">
-                    <div class="nk-block-between" style="margin: -4% -5% 0%">
+                    <div class="nk-block-between" style="margin: -4% -3% 0%">
                         <div class="nk-block-head-content">
                             <h3 class="nk-block-title page-title">Project Management</h3>
                         </div>
+                        @if($userRoleID == 1 || $userRoleID == 2)
                         <div class="nk-block-head-content">
                             <a href="#" class="btn btn-icon btn-primary ps-2" id="loadProjectManagementForm" data-bs-toggle="modal" data-bs-target="#modalForm">Add<em class="icon ni ni-plus"></em></a>
                         </div>
+                        @endif
                     </div>
                 </div>
 

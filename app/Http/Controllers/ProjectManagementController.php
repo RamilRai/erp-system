@@ -10,6 +10,7 @@ use Illuminate\Database\QueryException;
 use Exception;
 use Storage;
 use DB;
+use Auth;
 
 class ProjectManagementController extends Controller
 {
@@ -28,7 +29,9 @@ class ProjectManagementController extends Controller
 
     public function index()
     {
-        return view('backend.project-management.index');
+        $userRole = \App\Models\UserRole::where('user_id', Auth::user()->id)->first();
+        $data['userRoleID'] = $userRole->role_id;
+        return view('backend.project-management.index',$data);
     }
 
     public function projectManagementCreate(Request $request)
@@ -81,7 +84,14 @@ class ProjectManagementController extends Controller
 
     public function projectManagementFetch()
     {
-        $data = ProjectManagement::fetchProjectManagementInfo();
+        $userRole = \App\Models\UserRole::where('user_id', Auth::user()->id)->first();
+        $userRoleID = $userRole->role_id;
+        $userID = '';
+        if($userRoleID == 3){
+            $userID = Auth::user()->id;
+        }
+
+        $data = ProjectManagement::fetchProjectManagementInfo($userID);
         $filtereddata = (@$data["totalfilteredrecs"] > 0 ? $data["totalfilteredrecs"] : @$data["totalrecs"]);
         $totalrecs = @$data["totalrecs"];
         unset($data["totalfilteredrecs"]);
@@ -107,7 +117,7 @@ class ProjectManagementController extends Controller
             }
             $array[$i]["assignedMembers"] = $assignTeams;
 
-            $progressBar = '<div class="progress" style="background-color:#D6D6D6"><div class="progress-bar" role="progressbar" title="55%" style="width: 55%; background-color: #4B8F4B" aria-valuenow="50" aria-valuemin="0" aria-valuemax="100"></div></div>';
+            $progressBar = '<div class="progress" style="background-color:#D6D6D6;border-radius: 10px;"><div class="progress-bar" role="progressbar" title="10%" style="width: 15%; background-color: #4B8F4B" aria-valuenow="50" aria-valuemin="0" aria-valuemax="100"></div></div>';
             $array[$i]["workProgress"] = $progressBar;
             $status = '';
             if ($row->project_status == 'Not Started Yet'){
@@ -141,10 +151,13 @@ class ProjectManagementController extends Controller
 
             // insert actions icons
             $action = '';
-            // for edit
-            $action .= '<a href="javascript:;" title="Edit Data" class="tooltipdiv editProjectManagement" style="color:blue; font-size: 20px" data-id="' . $row->id .  '"><i class="fa-solid fa-pen-to-square"></i></a>';
-            // for delete
-            $action .= '<a href="javascript:;" title="Delete Data" class="tooltipdiv deleteProjectManagement px-1" style="color:red; font-size: 20px" data-id="' . $row->id .  '"><i class="fa-solid fa-trash-can"></i></a>';
+            if($userRoleID == 1 || $userRoleID == 2){
+                // for edit
+                $action .= '<a href="javascript:;" title="Edit Data" class="tooltipdiv editProjectManagement" style="color:blue; font-size: 20px" data-id="' . $row->id .  '"><i class="fa-solid fa-pen-to-square"></i></a>';
+
+                // for delete
+                $action .= '<a href="javascript:;" title="Delete Data" class="tooltipdiv deleteProjectManagement px-1" style="color:red; font-size: 20px" data-id="' . $row->id .  '"><i class="fa-solid fa-trash-can"></i></a>';
+            }
             // for show
             $action .= '<a href="javascript:;" title="View Data" class="tooltipdiv viewProjectManagement" style="color:green; font-size: 20px" data-id="' . $row->id .  '"><i class="fa-solid fa-eye"></i></a>';
             $array[$i]["action"] = $action;
