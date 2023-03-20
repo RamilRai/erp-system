@@ -8,9 +8,13 @@
     <form  class="form-validate is-alter"enctype="multipart/form-data" id="marksForm">
         @csrf
         <div class="row">
-            <input type="hidden" name="id" value="{{$taskId}}">
+            <input type="hidden" name="id" value="{{$currentTask->id}}">
             <div class="form-group col-12">
-                <label class="form-label" for="achieved_point">Achieved Points <code>*</code></label>
+                @if ($currentTask->feedback)
+                    <label class="form-label" for="achieved_point">Feedback/Remarks From Assigned Members:</label>
+                    <p>{{$currentTask->feedback}}</p>
+                @endif
+                <label class="form-label" for="achieved_point">Achieved Points <code>*</code> (Task Point: {{$currentTask->task_point}})</label>
                 <div class="form-control-wrap">
                     <input type="text" class="form-control" id="achieved_point" name="achieved_point">
                 </div>

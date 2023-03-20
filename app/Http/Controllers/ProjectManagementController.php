@@ -118,9 +118,9 @@ class ProjectManagementController extends Controller
             $array[$i]["assignedMembers"] = $assignTeams;
 
             // for progress bar
-            $fetchTotalTasks = TaskManagement::select('verified_date_ad')->where('project_id', $row->id)->get();
-            $countTotalTasks = count($fetchTotalTasks->pluck('verified_date_ad'));
-            $countVerifiedTasks = count($fetchTotalTasks->whereNotNull('verified_date_ad')->pluck('verified_date_ad'));
+            $fetchTotalTasks = TaskManagement::where(['project_id'=>$row->id, 'status'=>'Y'])->get();
+            $countTotalTasks = count($fetchTotalTasks);
+            $countVerifiedTasks = count($fetchTotalTasks->where('task_status', 'Verified'));
             $calculateProgressPercentage = 0;
             if (!empty($countTotalTasks)) {
                 $calculateProgressPercentage = round(($countVerifiedTasks / $countTotalTasks) * 100);

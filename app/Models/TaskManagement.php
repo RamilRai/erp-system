@@ -8,8 +8,10 @@ use App\Models\ProjectManagement;
 use Illuminate\Support\Facades\Mail;
 use App\Mail\TaskCompletedMail;
 use Illuminate\Support\Arr;
+use App\Jobs\VerifiedMail;
 use Carbon\Carbon;
 use Str;
+use DB;
 
 class TaskManagement extends Model
 {
@@ -173,6 +175,13 @@ class TaskManagement extends Model
             $taskManagement->achieved_point = $freshData['achieved_point'];
             $taskManagement->task_status = 'Verified';
             $taskManagement->response_from_supervisor = $freshData['response_from_supervisor'];
+            $assignedMembers = DB::table('profiles')->whereIn('user_id', json_decode($taskManagement->assigned_to))->get();
+            
+            foreach ($assignedMembers as $members) {
+                // $emails = $members->email;
+                dispatch(new VerifiedMail($members, $taskManagement));
+            }
+
             $result = $taskManagement->save();
 
             if($result){
