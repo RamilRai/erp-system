@@ -4,7 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
-use App\Models\{ProjectManagement, Common, Profile};
+use App\Models\{ProjectManagement, Common, Profile, TaskManagement};
 use App\Http\Requests\ProjectManagementRequest;
 use Illuminate\Database\QueryException;
 use Exception;
@@ -117,8 +117,15 @@ class ProjectManagementController extends Controller
             }
             $array[$i]["assignedMembers"] = $assignTeams;
 
-            $progressBar = '<div class="progress" style="background-color:#D6D6D6;border-radius: 10px;"><div class="progress-bar" role="progressbar" title="10%" style="width: 15%; background-color: #4B8F4B" aria-valuenow="50" aria-valuemin="0" aria-valuemax="100"></div></div>';
-            $array[$i]["workProgress"] = $progressBar;
+            // for progress bar
+            $fetchTotalTasks = TaskManagement::select('verified_date_ad')->where('project_id', $row->id)->get();
+            $countTotalTasks = count($fetchTotalTasks->pluck('verified_date_ad'));
+            $countVerifiedTasks = count($fetchTotalTasks->whereNotNull('verified_date_ad')->pluck('verified_date_ad'));
+            $calculateProgressPercentage = 0;
+            if (!empty($countTotalTasks)) {
+                $calculateProgressPercentage = round(($countVerifiedTasks / $countTotalTasks) * 100);
+            }
+            $array[$i]["workProgress"] = '<div class="progress" style="background-color:#D6D6D6;border-radius: 10px;"><div class="progress-bar" role="progressbar" title="'.$calculateProgressPercentage.'%" style="width: '.$calculateProgressPercentage.'%; background-color: #4B8F4B" aria-valuenow="50" aria-valuemin="0" aria-valuemax="100"></div></div>';
             $status = '';
             if ($row->project_status == 'Not Started Yet'){
                 $status = '<span class="badge" style="background: #808080;">Not Started Yet</span>';
