@@ -112,18 +112,39 @@ class AdminController extends Controller
 
     public function superadmindashboard()
     {
-        return view('admin.superadmindashboard');
+        $user = Auth::user();
+        if ($user->first_login != null) {
+            return view('admin.superadmindashboard');
+        } else {
+            Auth::logout();
+            session()->flush();
+            return redirect()->route('admin.login');
+        }
     }
 
 
     public function projectmanagerdashboard()
     {
-        return view('admin.projectmanagerdashboard');
+        $user = Auth::user();
+        if ($user->first_login != null) {
+            return view('admin.projectmanagerdashboard');
+        } else {
+            Auth::logout();
+            session()->flush();
+            return redirect()->route('admin.login');
+        }
     }
 
     public function admindashboard()
     {
-        return view('admin.dashboard');
+        $user = Auth::user();
+        if ($user->first_login != null) {
+            return view('admin.dashboard');
+        } else {
+            Auth::logout();
+            session()->flush();
+            return redirect()->route('admin.login');
+        }
     }
 
     public function logout()
