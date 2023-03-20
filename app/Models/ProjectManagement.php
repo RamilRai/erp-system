@@ -67,7 +67,14 @@ class ProjectManagement extends Model
 
             if(!empty($userID)){
                 $userJson = '"'.$userID.'"';
-                $cond .= " AND project_lead_by = ".$userID." OR JSON_CONTAINS(assign_team_members, '[".$userJson."]', '$') ";
+                
+                /* the line of code for json format that supports in pgsql */
+                $cond .= " AND project_lead_by = ".$userID." OR assign_team_members::jsonb @> '[".$userJson."]' ";
+                /* the line of code for json format that supports in pgsql */
+
+                /* the line of code for json format that supports in mysql */
+                // $cond .= " AND project_lead_by = ".$userID." OR JSON_CONTAINS(assign_team_members, '[".$userJson."]', '$') ";
+                /* the line of code for json format that supports in mysql */
             }
 
             if ($get['sSearch_1']) {
