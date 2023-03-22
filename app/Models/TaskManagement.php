@@ -9,6 +9,8 @@ use Illuminate\Support\Facades\Mail;
 use App\Mail\TaskCompletedMail;
 use Illuminate\Support\Arr;
 use App\Jobs\VerifiedMail;
+use App\Jobs\AssignTaskMail;
+use App\Mail\SendAssignTaskMail;
 use Carbon\Carbon;
 use Str;
 use DB;
@@ -24,7 +26,7 @@ class TaskManagement extends Model
         return $this->belongsTo(ProjectManagement::class, 'project_id', 'id');
     }
 
-    public static function storeData($post, $taskManagement)
+    public static function storeData($post, $taskManagement, $request)
     {
         try {
             $taskManagement->assigned_to = json_encode($post['assigned_to']);
@@ -41,10 +43,15 @@ class TaskManagement extends Model
             $taskManagement->task_end_date_ad = $freshData['task_end_date_ad'];
             $taskManagement->estimated_hour = $freshData['estimated_hour'];
             $taskManagement->priority = $freshData['priority'];
-            $taskManagement->task_description = $freshData['task_description'];
+            $taskManagement->task_description = $post['task_description'];
             $taskManagement->task_point = $freshData['task_point'];
             if ($freshData['id'] == null) {
                 $taskManagement->task_status = 'Not Started Yet';
+                $assignedMembers = DB::table('profiles')->whereIn('user_id', $request->assigned_to)->get();
+                foreach ($assignedMembers as  $member) {
+                    // dispatch(new AssignTaskMail($member, $taskManagement));
+                    Mail::to($member->email)->send(new SendAssignTaskMail($member, $taskManagement));
+                }
             }
             $result = $taskManagement->save();
 
@@ -156,7 +163,7 @@ class TaskManagement extends Model
 
             // send mail
             Mail::to($taskManagement->projects->profiles->email)
-                ->cc(['codelogictechnologies@gmail.com', 'hr@cltech.com.np', 'info@cltech.com.np'])
+                ->cc('info@cltech.com.np')
                 ->send(new TaskCompletedMail($taskManagement));
 
             $result = $taskManagement->save();
@@ -185,7 +192,6 @@ class TaskManagement extends Model
             $assignedMembers = DB::table('profiles')->whereIn('user_id', json_decode($taskManagement->assigned_to))->get();
             
             foreach ($assignedMembers as $members) {
-                // $emails = $members->email;
                 dispatch(new VerifiedMail($members, $taskManagement));
             }
 

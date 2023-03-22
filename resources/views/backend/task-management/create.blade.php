@@ -22,7 +22,7 @@
                     <select class="form-control" name="project_id" id="project_id">
                         <option value="" hidden>-- Select Project Name --</option>
                         @foreach ($projectName as $pn_item)
-                            <option class="projectName" value="{{$pn_item->id}}" {{$pn_item->id == @$taskManagement->project_id ? 'selected':''}} data-project-name="{{$pn_item->project_name}}">{{$pn_item->project_name}}</option>
+                            <option value="{{$pn_item->id}}" {{$pn_item->id == @$taskManagement->project_id ? 'selected':''}} data-project-name="{{$pn_item->project_name}}">{{$pn_item->project_name}}</option>
                         @endforeach
                     </select>
                 </div>
@@ -240,7 +240,7 @@
         if ($('#taskManagementForm').valid()) {
             var formData = new FormData($('#taskManagementForm')[0]);
             formData.append('task_description', CKEDITOR.instances['task_description'].getData());
-            var projectName = $('.projectName').data('project-name');
+            var projectName = $('#project_id option:selected').data('project-name');
             formData.append('projectName', projectName);
             $.ajax({
                 headers: {

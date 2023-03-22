@@ -7,7 +7,8 @@
     <title>Task Verified</title>
 </head>
 <body>
-    <div style="float: right;"><p><b>Date & Time:</b> {{date('Y-m-d', strtotime($taskManagement->verified_date_ad))}} {{date('g:i a', strtotime($taskManagement->verified_date_ad))}}, {{date('l', strtotime($taskManagement->verified_date_ad))}}</p>
+    <div style="float: right;">
+        <p><b>Date & Time:</b> {{date('Y-m-d', strtotime($taskManagement->verified_date_ad))}} {{date('g:i a', strtotime($taskManagement->verified_date_ad))}}, {{date('l', strtotime($taskManagement->verified_date_ad))}}</p>
     </div>
     
     <div style="clear:both">
@@ -24,6 +25,6 @@
     <div>
         <p> With Best Regards, </p>
         <p> {{$taskManagement->projects->profiles->first_name}} {{$taskManagement->projects->profiles->middle_name}} {{$taskManagement->projects->profiles->last_name}} </p>
-        </div>
+    </div>
 </body>
 </html>

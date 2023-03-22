@@ -273,13 +273,13 @@
             $('.newPassword').on('keyup', function () {
                 $('#oldPasswordMessage').html("");
                 var newPassword = $(this).val();
-                var regularExpression = /^(?=.*\d)(?=.*[A-Z])(?=.*[^a-zA-Z0-9])(?!.*\s).{6,}$/;
+                var regularExpression = /^(?=.*[A-Za-z])(?=.*\d)[A-Za-z\d\S]{6,}$/;
                 var result = regularExpression.test(newPassword);
                 if (result == true) {
                     $(".errorLogin").html("<p class='text-success'>Ok ! now you can retype new password for confirmation.</p>").show();
                     $('.confirmPassword').removeAttr('disabled');
                 } else {
-                    $('.errorLogin').html("<p class='text-danger'>Password must be atleast 6 character long including 1 Uppercase, symbol and number.</p>");
+                    $('.errorLogin').html("<p class='text-danger'>Your password must be at atleast 6 characters containing Alpha Numeric.</p>");
                 }
                 $('.errorLogin').delay(10000).fadeOut('slow');
             });

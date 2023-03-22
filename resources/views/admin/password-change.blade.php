@@ -130,7 +130,8 @@
 
         //============================== validate and check new password start ==============================
         function validatePassword(pwd) {
-            var regex = /^(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{6,}$/;
+            // var regex = /^(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{6,}$/;
+            var regex = /^(?=.*[A-Za-z])(?=.*\d)[A-Za-z\d\S]{6,}$/;
             var txt = pwd;
             if (regex.test(txt)) {
                 return true;
@@ -146,7 +147,7 @@
                 $("#new-pwd-error").html("<p class='text-success'>Ok ! now you can retype new password for confirmation.</p>").show();
                 $("#confirmPassword").removeAttr('disabled');
             }else{
-                $("#new-pwd-error").html("<p class='text-danger'>Your password must be at atleast 6 characters containing Alpha Numeric and Symbol. .</p>").show();
+                $("#new-pwd-error").html("<p class='text-danger'>Your password must be at atleast 6 characters containing Alpha Numeric.</p>").show();
             }
             $('#new-pwd-error').delay(10000).fadeOut('slow');
         });
