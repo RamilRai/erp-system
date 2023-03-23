@@ -59,7 +59,6 @@
         </div>
     </div>
 </div>
-
 @endsection
 
 @section('main-scripts')
@@ -67,6 +66,11 @@
     <script>
         $(document).ready(function () {
 
+            var myArray = JSON.parse('{!! json_encode($members) !!}');
+            console.log(myArray);
+            $.each(myArray, function (index, value) { 
+                 console.log(value.fullname);
+            });
             //================== open modal form start ==================
             $('#loadTaskManagementForm').on('click', function(){
                 var url = '{{route('task-management.create')}}';
@@ -130,16 +134,17 @@
                 sPlaceHolder: "head:after",
                 aoColumns: [
                     {
-                        type: "null"
-                    },
-                    {
-                        type: "null"
+                        type: "text"
                     },
                     {
                         type: "text"
                     },
                     {
-                        type: "null"
+                        type: "text"
+                    },
+                    {
+                        type: "select",
+                        values: ["New Task", "Fix Bug", "Correction", "Testing", "Documentation", "Support"]
                     },
                     {
                         type: "null"
@@ -148,13 +153,16 @@
                         type: "null"
                     },
                     {
-                        type: "null"
+                        type: "select",
+                        values: ["Urgent", "High", "Medium", "Low"]
                     },
                     {
-                        type: "null"
+                        type: "select",
+                        values: myArray
                     },
                     {
-                        type: "null"
+                        type: "select",
+                        values: ["Not Started Yet", "On Progress", "Testing", "Bug Fixing", "Cancelled", "Hold", "Completed", "Verified"]
                     },
                     {
                         type: "null"

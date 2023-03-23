@@ -86,8 +86,28 @@ class TaskManagement extends Model
                 /* the line of code for json format that supports in mysql */
             }
 
+            if ($get['sSearch_0']) {
+                $cond .= "and lower(ticket_number) like'%".$get['sSearch_0']."%'";
+            }
+
+            if ($get['sSearch_1']) {
+                $cond .= "and lower(task_title) like'%".$get['sSearch_1']."%'";
+            }
+
             if ($get['sSearch_2']) {
-                $cond .= "and lower(TM.project_type) like'%".$get['sSearch_2']."%'";
+                $cond .= "and lower(project_name) like'%".$get['sSearch_2']."%'";
+            }
+
+            if ($get['sSearch_3']) {
+                $cond .= "and lower(task_type) like'%".$get['sSearch_3']."%'";
+            }
+
+            if ($get['sSearch_6']) {
+                $cond .= "and lower(priority) like'%".$get['sSearch_6']."%'";
+            }
+
+            if ($get['sSearch_8']) {
+                $cond .= "and lower(task_status) like'%".$get['sSearch_8']."%'";
             }
 
             $offset = 0;
@@ -115,7 +135,7 @@ class TaskManagement extends Model
                     JOIN
                         project_management AS PM ON TM.project_id = PM.id
                     WHERE $cond
-                    ORDER BY id
+                    ORDER BY TM.id
                     DESC";
 
             if ($limit > -1) {
