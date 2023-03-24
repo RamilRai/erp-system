@@ -26,6 +26,21 @@ class TaskManagement extends Model
         return $this->belongsTo(ProjectManagement::class, 'project_id', 'id');
     }
 
+    public static function fetchMembers()
+    {
+        try {
+            $result = DB::table('profiles')
+                        ->join('user_roles', 'profiles.user_id', '=', 'user_roles.user_id')
+                        ->select('profiles.user_id', DB::raw("CONCAT_WS(' ', first_name, middle_name, last_name) AS fullname"))
+                        ->where(['user_roles.role_id'=>3, 'profiles.status'=>'Y', 'user_roles.status'=>'Y'])
+                        ->get();
+
+            return $result;
+        } catch (\Throwable $th) {
+            throw $th;
+        }
+    }
+
     public static function storeData($post, $taskManagement, $request)
     {
         try {
@@ -86,6 +101,12 @@ class TaskManagement extends Model
                 /* the line of code for json format that supports in mysql */
             }
 
+            $members = Self::fetchMembers();
+            $memArray = [];
+            foreach ($members as $row) {
+                $memArray[strtolower($row->fullname)] = $row->user_id;
+            }
+
             if ($get['sSearch_0']) {
                 $cond .= "and lower(ticket_number) like'%".$get['sSearch_0']."%'";
             }
@@ -104,6 +125,10 @@ class TaskManagement extends Model
 
             if ($get['sSearch_6']) {
                 $cond .= "and lower(priority) like'%".$get['sSearch_6']."%'";
+            }
+
+            if ($get['sSearch_7']) {
+                $cond .= "and lower(CAST (assigned_to AS VARCHAR)) like'%".$memArray[$get['sSearch_7']]."%'";
             }
 
             if ($get['sSearch_8']) {

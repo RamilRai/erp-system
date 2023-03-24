@@ -67,10 +67,12 @@
         $(document).ready(function () {
 
             var myArray = JSON.parse('{!! json_encode($members) !!}');
-            console.log(myArray);
-            $.each(myArray, function (index, value) { 
-                 console.log(value.fullname);
-            });
+            var memArray = [];
+            var members = $.each(myArray, function (index, value) { 
+                            members = value.fullname;
+                            memArray.push(members);
+                        });
+
             //================== open modal form start ==================
             $('#loadTaskManagementForm').on('click', function(){
                 var url = '{{route('task-management.create')}}';
@@ -158,7 +160,7 @@
                     },
                     {
                         type: "select",
-                        values: myArray
+                        values: memArray
                     },
                     {
                         type: "select",
