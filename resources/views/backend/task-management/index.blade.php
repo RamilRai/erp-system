@@ -66,12 +66,14 @@
     <script>
         $(document).ready(function () {
 
-            var myArray = JSON.parse('{!! json_encode($members) !!}');
+            var membersArray = JSON.parse('{!! json_encode($members) !!}');
             var memArray = [];
-            var members = $.each(myArray, function (index, value) { 
+            var members = $.each(membersArray, function (index, value) { 
                             members = value.fullname;
                             memArray.push(members);
                         });
+
+            var projectArray = JSON.parse('{!! json_encode($projects) !!}') 
 
             //================== open modal form start ==================
             $('#loadTaskManagementForm').on('click', function(){
@@ -142,7 +144,8 @@
                         type: "text"
                     },
                     {
-                        type: "text"
+                        type: "select",
+                        values: projectArray
                     },
                     {
                         type: "select",
