@@ -84,7 +84,6 @@
                                         label: obj.project_name
                                     };
                                 });
-            console.log(updatedProjectsArray);
             //================== list projects in searchable field of datatable end ==================
 
             //================== open modal form start ==================
