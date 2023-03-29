@@ -154,7 +154,6 @@ Route::controller(TaskManagementController::class)->middleware(['auth'])->prefix
 Route::controller(TaskReportController::class)->middleware(['auth'])->prefix('admin/task-report')->group(function(){
     Route::get('/', 'index')->name('task-report.index');
     Route::any('/fetch-data', 'fetch')->name('task-report.fetch');
-    // Route::get('/export-data', 'export')->name('task-report.export');
 });
 
 //===============================================================================================================================
