@@ -66,14 +66,26 @@
     <script>
         $(document).ready(function () {
 
+            //================== list members in searchable field of datatable start ==================
             var membersArray = JSON.parse('{!! json_encode($members) !!}');
-            var memArray = [];
-            var members = $.each(membersArray, function (index, value) { 
-                            members = value.fullname;
-                            memArray.push(members);
-                        });
+            var updatedMembersArray = membersArray.map(obj => {
+                                    return {
+                                        value: obj.user_id,
+                                        label: obj.fullname
+                                    };
+                                });
+            //================== list members in searchable field of datatable end ==================
 
-            var projectArray = JSON.parse('{!! json_encode($projects) !!}') 
+            //================== list projects in searchable field of datatable start ==================
+            var projectArray = JSON.parse('{!! json_encode($projects) !!}') ;
+            var updatedProjectsArray = projectArray.map(obj => {
+                                    return {
+                                        value: obj.id,
+                                        label: obj.project_name
+                                    };
+                                });
+            console.log(updatedProjectsArray);
+            //================== list projects in searchable field of datatable end ==================
 
             //================== open modal form start ==================
             $('#loadTaskManagementForm').on('click', function(){
@@ -145,7 +157,7 @@
                     },
                     {
                         type: "select",
-                        values: projectArray
+                        values: updatedProjectsArray
                     },
                     {
                         type: "select",
@@ -163,7 +175,7 @@
                     },
                     {
                         type: "select",
-                        values: memArray
+                        values: updatedMembersArray
                     },
                     {
                         type: "select",

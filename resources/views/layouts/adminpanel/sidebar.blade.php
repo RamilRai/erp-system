@@ -59,6 +59,12 @@
                             <span class="nk-menu-text">Task Management</span>
                         </a>
                     </li>
+                    <li class="nk-menu-item">
+                        <a href="{{route('task-report.index')}}" class="nk-menu-link">
+                            <span class="nk-menu-icon"><em class="fa-solid fa-table fa-lg"></em></span>
+                            <span class="nk-menu-text">Task Report</span>
+                        </a>
+                    </li>
                 </ul>
             </div>
         </div>

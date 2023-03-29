@@ -35,11 +35,11 @@ class TaskManagementController extends Controller
     {
         $data['members'] = TaskManagement::fetchMembers();
         // $data['projects'] = DB::table('project_management')->select('project_name')->where('status', 'Y')->get();
-        $projectsArray = DB::table('project_management')->select('project_name')->where('status', 'Y')->get();
-        $data['projects'] = [];
-        foreach ($projectsArray as  $item) {
-            $data['projects'][] = $item->project_name;
-        }
+        $data['projects'] = DB::table('project_management')->select('id', 'project_name')->where('status', 'Y')->get();
+        // $data['projects'] = [];
+        // foreach ($projectsArray as  $item) {
+        //     $data['projects'][] = $item->project_name;
+        // }
         return view('backend.task-management.index', $data);
     }
 

@@ -87,7 +87,7 @@ class TaskManagement extends Model
             foreach ($get as $key => $value) {
                 $get[$key] = trim(strtolower(htmlspecialchars($get[$key], ENT_QUOTES)));
             }
-            $cond = " TM.status = 'Y'";
+            $cond = " TM.status = 'Y' ";
 
             if(!empty($userID)){
                 $userJson = '"'.$userID.'"';
@@ -102,10 +102,12 @@ class TaskManagement extends Model
             }
 
             $members = Self::fetchMembers();
+            // dd($members);
             $memArray = [];
             foreach ($members as $row) {
                 $memArray[strtolower($row->fullname)] = $row->user_id;
             }
+            // dd($memArray);
 
             if ($get['sSearch_0']) {
                 $cond .= "and lower(ticket_number) like'%".$get['sSearch_0']."%'";
@@ -116,23 +118,27 @@ class TaskManagement extends Model
             }
 
             if ($get['sSearch_2']) {
-                $cond .= "and lower(project_name) like'%".$get['sSearch_2']."%'";
+                $cond .= "and TM.project_id = ".$get['sSearch_2'];
             }
 
             if ($get['sSearch_3']) {
-                $cond .= "and lower(task_type) like'%".$get['sSearch_3']."%'";
+                $taskType = strtolower(trim($get['sSearch_3']));
+                $cond .= "and lower(task_type) = '".addslashes($taskType)."'";
             }
 
             if ($get['sSearch_6']) {
-                $cond .= "and lower(priority) like'%".$get['sSearch_6']."%'";
+                $priority = strtolower(trim($get['sSearch_6']));
+                $cond .= "and lower(priority) = '".addslashes($priority)."'";
             }
 
             if ($get['sSearch_7']) {
-                $cond .= "and lower(CAST (assigned_to AS VARCHAR)) like'%".$memArray[$get['sSearch_7']]."%'";
+                $userIDSearch = '"'.$get['sSearch_7'].'"';
+                $cond .= " AND assigned_to::jsonb @> '[$userIDSearch]' ";
             }
 
             if ($get['sSearch_8']) {
-                $cond .= "and lower(task_status) like'%".$get['sSearch_8']."%'";
+                $taskStatus = strtolower(trim($get['sSearch_8']));
+                $cond .= "and lower(task_status) = '".addslashes($taskStatus)."'";
             }
 
             $offset = 0;
@@ -199,9 +205,10 @@ class TaskManagement extends Model
             }
 
             if ($differenceInDays > 0) {
-                $taskManagement->completed_status = "Before Deadline ($differenceInDays days)";
+                $taskManagement->completed_status = "Early ($differenceInDays days)";
             } elseif ($differenceInDays < 0) {
-                $taskManagement->completed_status = "After Deadline ($differenceInDays days)";
+                $differenceInDays = abs($differenceInDays);
+                $taskManagement->completed_status = "Delay ($differenceInDays days)";
             } else {
                 $taskManagement->completed_status = "On Time";
             }
@@ -268,6 +275,51 @@ class TaskManagement extends Model
             }
         } catch (Exception $e) {
             throw $e;
+        }
+    }
+
+    public static function getReport($post)
+    {
+        try {
+            $sql = "SELECT *
+                    FROM (
+                    SELECT
+                        P.user_id, 
+                        CONCAT(first_name, ' ', middle_name, ' ', last_name) AS staffname
+                    FROM
+                        profiles AS P
+                        JOIN user_roles AS UR ON UR.user_id = P.user_id 
+                    WHERE
+                        role_id = 3
+                        AND P.status = 'Y' 
+                        AND UR.status = 'Y'
+                    ORDER BY
+                        staffname ASC
+                    ) AS S
+                    LEFT JOIN (
+                    SELECT
+                        PM.project_name, TM.ticket_number, TM.task_title, TM.task_type, TM.task_start_date_bs,
+                        TM.task_end_date_bs, TM.estimated_hour, TM.priority, assigned_to_array, TM.task_point,
+                        TM.task_status, TM.completed_status, TM.achieved_point
+                    FROM (
+                        SELECT
+                        project_id, ticket_number, task_title, task_type, task_start_date_bs,
+                        task_end_date_bs, estimated_hour, priority, assigned_to, task_point,
+                        task_status, completed_status, achieved_point,
+                        json_array_elements_text(assigned_to::json) AS assigned_to_array
+                        FROM task_management
+                        WHERE status = 'Y' AND extract(month from task_start_date_bs) = ".$post['month']." AND extract(year from task_start_date_bs) = ".$post['year']."
+                    ) AS TM
+                    JOIN project_management AS PM ON PM.id = TM.project_id
+                    WHERE PM.status = 'Y'
+                    ) AS T ON S.user_id = T.assigned_to_array::int
+                    ORDER BY staffname ASC";
+                        
+            $result = DB::select($sql);
+            // dd($result);
+            return $result;
+        } catch (\Throwable $th) {
+            throw $th;
         }
     }
 }

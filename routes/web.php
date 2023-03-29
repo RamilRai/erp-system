@@ -7,6 +7,7 @@ use App\Http\Controllers\Backend\CRM\LeadController;
 use App\Http\Controllers\Backend\CRM\CustomerController;
 use App\Http\Controllers\ProjectManagementController;
 use App\Http\Controllers\TaskManagementController;
+use App\Http\Controllers\TaskReportController;
 
 /*
 |--------------------------------------------------------------------------
@@ -146,6 +147,14 @@ Route::controller(TaskManagementController::class)->middleware(['auth'])->prefix
     // if task cancelled or hold
     Route::post('/revoke', 'taskManagementRevoke')->name('task-management.revoke');
     Route::post('/revoke-submit', 'taskManagementRevokeSubmit')->name('task-management-revoke.submit');
+});
+
+//===============================================================================================================================
+
+Route::controller(TaskReportController::class)->middleware(['auth'])->prefix('admin/task-report')->group(function(){
+    Route::get('/', 'index')->name('task-report.index');
+    Route::any('/fetch-data', 'fetch')->name('task-report.fetch');
+    // Route::get('/export-data', 'export')->name('task-report.export');
 });
 
 //===============================================================================================================================

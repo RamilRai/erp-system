@@ -25,7 +25,7 @@
                     </tr>
                     <tr>
                         <th scope="row">Project Name</th>
-                        <td>{{$result->project_id}}</td>
+                        <td>{{$result->projects->project_name}}</td>
                     </tr>
                     <tr>
                         <th scope="row">Task Type</th>
