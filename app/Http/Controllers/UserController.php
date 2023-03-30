@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Http\Controllers\Backend;
+namespace App\Http\Controllers;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
@@ -133,10 +133,10 @@ class UserController extends Controller
             }
 
             DB::commit();
-        // } catch (QueryException $qe) {
-        //     DB::rollback();
-        //     $this->type = 'error';
-        //     $this->message = $this->queryExceptionMessage;
+        } catch (QueryException $qe) {
+            DB::rollback();
+            $this->type = 'error';
+            $this->message = $this->queryExceptionMessage;
         } catch (Exception $e) {
             DB::rollback();
             $this->type = 'error';

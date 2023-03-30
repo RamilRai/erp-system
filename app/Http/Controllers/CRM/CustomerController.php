@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Http\Controllers\Backend\CRM;
+namespace App\Http\Controllers\CRM;
 
 use Illuminate\Database\QueryException;
 use App\Http\Controllers\Controller;

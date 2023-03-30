@@ -2,9 +2,9 @@
 
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\AdminController;
-use App\Http\Controllers\Backend\UserController;
-use App\Http\Controllers\Backend\CRM\LeadController;
-use App\Http\Controllers\Backend\CRM\CustomerController;
+use App\Http\Controllers\UserController;
+use App\Http\Controllers\CRM\LeadController;
+use App\Http\Controllers\CRM\CustomerController;
 use App\Http\Controllers\ProjectManagementController;
 use App\Http\Controllers\TaskManagementController;
 use App\Http\Controllers\TaskReportController;

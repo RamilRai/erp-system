@@ -33,6 +33,10 @@
         .fade:not(.show) {
             background: #000000b3;
         }
+
+        tbody{
+            font-size: 13px;
+        }
     </style>
 </head>
 

@@ -33,6 +33,7 @@ class TaskManagement extends Model
                         ->join('user_roles', 'profiles.user_id', '=', 'user_roles.user_id')
                         ->select('profiles.user_id', DB::raw("CONCAT_WS(' ', first_name, middle_name, last_name) AS fullname"))
                         ->where(['user_roles.role_id'=>3, 'profiles.status'=>'Y', 'user_roles.status'=>'Y'])
+                        ->orderBy('fullname', 'asc')
                         ->get();
 
             return $result;
