@@ -1,4 +1,4 @@
-<table class="table table-bordered">
+<table class="table table-bordered" style="padding-top: 10px;" id="taskReportTable">
     <thead>
         <tr>
             <th scope="col">S.No.</th>
@@ -27,3 +27,11 @@
         @endforeach
     </tbody>
 </table>
+
+<script>
+    $("#taskReportTable").dataTable({
+        "paging": false,
+        "ordering": false,
+        "bInfo" : false,
+    });
+</script>

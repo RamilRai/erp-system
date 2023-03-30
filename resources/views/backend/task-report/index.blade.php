@@ -4,6 +4,22 @@
 
 @section('main-content')
 
+<style>
+    .nk-wrap{
+        overflow: hidden;
+    }
+    .dataTables_filter label{
+            margin-right: 40px;
+        }
+        .dataTables_wrapper{
+            padding: 0px; margin: 0px;
+        }
+</style>
+
+<div class="row">
+    <div class="col-md-12">
+
+ 
 <div class="mb-2">
     <nav class="navbar navbar-expand-md navbar-light bg-light" style="margin: -2%">
         <div class="container-fluid">
@@ -48,9 +64,10 @@
     </nav>
 </div>
 
-<div id="showTable" class="mt-5" style="margin: 0% -2%">
+<div id="showTable" class="mt-5 row" style="">
 </div>
-
+</div>
+</div>
 @endsection
 
 @section('main-scripts')
