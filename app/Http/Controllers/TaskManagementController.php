@@ -34,12 +34,9 @@ class TaskManagementController extends Controller
     public function index()
     {
         $data['members'] = TaskManagement::fetchMembers();
-        // $data['projects'] = DB::table('project_management')->select('project_name')->where('status', 'Y')->get();
+
         $data['projects'] = DB::table('project_management')->select('id', 'project_name')->where('status', 'Y')->get();
-        // $data['projects'] = [];
-        // foreach ($projectsArray as  $item) {
-        //     $data['projects'][] = $item->project_name;
-        // }
+
         return view('backend.task-management.index', $data);
     }
 
@@ -122,7 +119,7 @@ class TaskManagementController extends Controller
         try {
             $post = $request->only(['_token', 'id', 'task_title', 'project_id', 'task_type', 'task_start_date_bs', 'task_start_date_ad', 'task_end_date_bs', 'task_end_date_ad',
                     'estimated_hour', 'priority', 'assigned_to', 'task_point', 'task_description', 'projectName']);
-            
+
             $this->message = $post['id'] == null ? "Task Management Information Submitted Successfully." : "Task Management Information Updated Successfully.";
 
             DB::beginTransaction();
