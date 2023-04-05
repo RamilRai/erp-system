@@ -37,7 +37,7 @@ class ProjectManagementRequest extends FormRequest
         }
         $rules['project_time_duration'] = 'required|max:100';
         $rules['start_date_bs'] = 'required|date';
-        $rules['end_date_bs'] = 'required|date|after:start_date_bs';
+        $rules['end_date_bs'] = 'required|date|after_or_equal:start_date_bs';
         $rules['project_lead_by'] = 'required';
         $rules['assign_team_members'] = 'required';
         $rules['project_status'] = 'required';

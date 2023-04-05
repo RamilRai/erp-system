@@ -18,7 +18,7 @@
     
     <div>
         <p> Best Regards, </p>
-        <p> {{$taskManagement->projects->profiles->first_name}} {{$taskManagement->projects->profiles->middle_name}} {{$taskManagement->projects->profiles->last_name}} </p>
+        <p> {{$taskManagement->assignedBy->first_name}} {{$taskManagement->assignedBy->middle_name}} {{$taskManagement->assignedBy->last_name}} </p>
     </div>
 
     @if (!empty($taskManagement->task_description))

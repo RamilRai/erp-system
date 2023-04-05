@@ -4,16 +4,16 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
-use App\Models\ProjectManagement;
+use App\Models\{ProjectManagement, Profile};
 use Illuminate\Support\Facades\Mail;
 use App\Mail\TaskCompletedMail;
 use Illuminate\Support\Arr;
-use App\Jobs\VerifiedMail;
-use App\Jobs\AssignTaskMail;
 use App\Mail\SendAssignTaskMail;
+use App\Mail\SendVerifiedMail;
 use Carbon\Carbon;
 use Str;
 use DB;
+use Auth;
 
 class TaskManagement extends Model
 {
@@ -24,6 +24,11 @@ class TaskManagement extends Model
     public function projects()
     {
         return $this->belongsTo(ProjectManagement::class, 'project_id', 'id');
+    }
+
+    public function assignedBy()
+    {
+        return $this->belongsTo(Profile::class, 'assigned_by', 'user_id');
     }
 
     public static function fetchMembers()
@@ -45,6 +50,7 @@ class TaskManagement extends Model
     public static function storeData($post, $taskManagement, $request)
     {
         try {
+            // dd($request->assigned_to);
             $taskManagement->assigned_to = json_encode($post['assigned_to']);
             Arr::forget($post, 'assigned_to'); // to remove a given key value pair from an array
             $freshData = sanitizeData($post);
@@ -62,13 +68,15 @@ class TaskManagement extends Model
             $taskManagement->task_description = $post['task_description'];
             $taskManagement->task_point = $freshData['task_point'];
             if ($freshData['id'] == null) {
+                $taskManagement->assigned_by = Auth::user()->id;
                 $taskManagement->task_status = 'Not Started Yet';
-                $assignedMembers = DB::table('profiles')->whereIn('user_id', $request->assigned_to)->get();
+                $assignedTo = array_diff($request->assigned_to, [Auth::user()->id]);
+                $assignedMembers = DB::table('profiles')->whereIn('user_id', $assignedTo)->get();
                 foreach ($assignedMembers as  $member) {
-                    // dispatch(new AssignTaskMail($member, $taskManagement));
                     Mail::to($member->email)->send(new SendAssignTaskMail($member, $taskManagement));
                 }
             }
+            $taskManagement->updated_by = Auth::user()->id;
             $result = $taskManagement->save();
 
             if($result){
@@ -161,7 +169,8 @@ class TaskManagement extends Model
                         TM.estimated_hour,
                         TM.priority,
                         TM.task_status,
-                        TM.assigned_to
+                        TM.assigned_to,
+                        TM.assigned_by
                     FROM
                         task_management AS TM
                     JOIN
@@ -239,13 +248,14 @@ class TaskManagement extends Model
             $taskManagement->verified_by = $taskManagement->projects->project_lead_by;
             $currentDateTime = Carbon::now();
             $taskManagement->verified_date_ad = $currentDateTime->format('Y-m-d H:i:s');
+            // dd((date('Y-m-d', strtotime($taskManagement->verified_date_ad))));
             $taskManagement->achieved_point = $freshData['achieved_point'];
             $taskManagement->task_status = 'Verified';
             $taskManagement->response_from_supervisor = $freshData['response_from_supervisor'];
             $assignedMembers = DB::table('profiles')->whereIn('user_id', json_decode($taskManagement->assigned_to))->get();
             
             foreach ($assignedMembers as $members) {
-                dispatch(new VerifiedMail($members, $taskManagement));
+                Mail::to($members->email)->send(new SendVerifiedMail($members, $taskManagement));
             }
 
             $result = $taskManagement->save();
