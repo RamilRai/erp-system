@@ -48,6 +48,10 @@
                         <td>{{$result->priority}}</td>
                     </tr>
                     <tr>
+                        <th scope="row">Task Assigned By</th>
+                        <td>{{$result->assignedBy->first_name}} {{$result->assignedBy->middle_name}} {{$result->assignedBy->last_name}}</td>
+                    </tr>
+                    <tr>
                         <th scope="row">Assigned Team Members</th>
                         <td>
                             @foreach ($assignedMembers as $item)

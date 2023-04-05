@@ -58,7 +58,7 @@ class TaskManagementController extends Controller
             $whereData['id'] = $post['projectid'];
         }
         $data = [];
-        
+
         $data['projectName'] = DB::table('project_management')->select('id', 'project_name')->where($whereData)->orWhereRaw("assign_team_members::jsonb @> ?", '["' . $userID . '"]')->get();
         if (!empty($post['id'])) {
             $data['taskManagement'] = TaskManagement::where(['id'=>$post['id'], 'status'=>'Y'])->first();
