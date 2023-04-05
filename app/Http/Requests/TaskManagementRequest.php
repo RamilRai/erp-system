@@ -33,7 +33,7 @@ class TaskManagementRequest extends FormRequest
         }
         $rules['task_type'] = 'required';
         $rules['task_start_date_bs'] = 'required|date';
-        $rules['task_end_date_bs'] = 'required|date|after:task_start_date_bs';
+        $rules['task_end_date_bs'] = 'required|date|after_or_equal:task_start_date_bs';
         $rules['estimated_hour'] = 'required|max:100';
         $rules['priority'] = 'required';
         $rules['assigned_to'] = 'required';

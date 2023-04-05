@@ -58,7 +58,8 @@ class TaskManagementController extends Controller
             $whereData['id'] = $post['projectid'];
         }
         $data = [];
-        $data['projectName'] = DB::table('project_management')->select('id', 'project_name')->where($whereData)->get();
+        
+        $data['projectName'] = DB::table('project_management')->select('id', 'project_name')->where($whereData)->orWhereRaw("assign_team_members::jsonb @> ?", '["' . $userID . '"]')->get();
         if (!empty($post['id'])) {
             $data['taskManagement'] = TaskManagement::where(['id'=>$post['id'], 'status'=>'Y'])->first();
             $data['assignedTeamMembers'] = json_decode($data['taskManagement']->assigned_to);
@@ -261,7 +262,7 @@ class TaskManagementController extends Controller
 
             // insert actions icons
             $action = '';
-            if(($row->project_lead_by == $userID) || ($userRoleID == 1 || $userRoleID == 2)){
+            if(($row->project_lead_by == $userID) || ($userRoleID == 1 || $userRoleID == 2) || $row->assigned_by == Auth::user()->id){
                 // for edit
                 $action .= '<a href="javascript:;" title="Edit Data" class="tooltipdiv editTaskManagement" style="color:blue; font-size: 20px" data-id="' . $row->id .  '" data-projectid="' . $row->projectid .  '"><i class="fa-solid fa-pen-to-square"></i></a>';
                 // for delete
