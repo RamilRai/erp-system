@@ -34,7 +34,7 @@ class TaskManagementController extends Controller
     public function index()
     {
         $data['members'] = TaskManagement::fetchMembers();
-        
+
         $data['projects'] = DB::table('project_management')->select('id', 'project_name')->where('status', 'Y')->get();
 
         return view('backend.task-management.index', $data);
@@ -58,7 +58,7 @@ class TaskManagementController extends Controller
             $whereData['id'] = $post['projectid'];
         }
         $data = [];
-        
+
         $data['projectName'] = DB::table('project_management')->select('id', 'project_name')->where($whereData)->orWhereRaw("assign_team_members::jsonb @> ?", '["' . $userID . '"]')->get();
         if (!empty($post['id'])) {
             $data['taskManagement'] = TaskManagement::where(['id'=>$post['id'], 'status'=>'Y'])->first();
@@ -120,7 +120,7 @@ class TaskManagementController extends Controller
         try {
             $post = $request->only(['_token', 'id', 'task_title', 'project_id', 'task_type', 'task_start_date_bs', 'task_start_date_ad', 'task_end_date_bs', 'task_end_date_ad',
                     'estimated_hour', 'priority', 'assigned_to', 'task_point', 'task_description', 'projectName']);
-            
+
             $this->message = $post['id'] == null ? "Task Management Information Submitted Successfully." : "Task Management Information Updated Successfully.";
 
             DB::beginTransaction();
