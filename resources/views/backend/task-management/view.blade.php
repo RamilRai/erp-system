@@ -47,10 +47,12 @@
                         <th scope="row">Task Priority</th>
                         <td>{{$result->priority}}</td>
                     </tr>
-                    <tr>
-                        <th scope="row">Task Assigned By</th>
-                        <td>{{$result->assignedBy->first_name}} {{$result->assignedBy->middle_name}} {{$result->assignedBy->last_name}}</td>
-                    </tr>
+                    @if (!empty($result->assigned_by))
+                        <tr>
+                            <th scope="row">Task Assigned By</th>
+                            <td>{{$result->assignedBy->first_name}} {{$result->assignedBy->middle_name}} {{$result->assignedBy->last_name}}</td>
+                        </tr>
+                    @endif
                     <tr>
                         <th scope="row">Assigned Team Members</th>
                         <td>
