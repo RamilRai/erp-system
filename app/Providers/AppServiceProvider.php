@@ -7,7 +7,7 @@ use Illuminate\Support\Facades\View;
 use App\Models\Profile;
 use Auth;
 
-class CustomAppServiceProvider extends ServiceProvider
+class AppServiceProvider extends ServiceProvider
 {
     /**
      * Register any application services.

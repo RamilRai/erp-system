@@ -70,8 +70,7 @@ class TaskManagement extends Model
             if ($freshData['id'] == null) {
                 $taskManagement->assigned_by = Auth::user()->id;
                 $taskManagement->task_status = 'Not Started Yet';
-                $assignedTo = array_diff($request->assigned_to, [Auth::user()->id]);
-                $assignedMembers = DB::table('profiles')->whereIn('user_id', $assignedTo)->get();
+                $assignedMembers = DB::table('profiles')->whereIn('user_id', $request->assigned_to)->get();
                 foreach ($assignedMembers as  $member) {
                     Mail::to($member->email)->send(new SendAssignTaskMail($member, $taskManagement));
                 }
@@ -111,12 +110,11 @@ class TaskManagement extends Model
             }
 
             $members = Self::fetchMembers();
-            // dd($members);
+            
             $memArray = [];
             foreach ($members as $row) {
                 $memArray[strtolower($row->fullname)] = $row->user_id;
             }
-            // dd($memArray);
 
             if ($get['sSearch_0']) {
                 $cond .= "and lower(ticket_number) like'%".$get['sSearch_0']."%'";
@@ -169,8 +167,7 @@ class TaskManagement extends Model
                         TM.estimated_hour,
                         TM.priority,
                         TM.task_status,
-                        TM.assigned_to,
-                        TM.assigned_by
+                        TM.assigned_to
                     FROM
                         task_management AS TM
                     JOIN
@@ -248,12 +245,11 @@ class TaskManagement extends Model
             $taskManagement->verified_by = $taskManagement->projects->project_lead_by;
             $currentDateTime = Carbon::now();
             $taskManagement->verified_date_ad = $currentDateTime->format('Y-m-d H:i:s');
-            // dd((date('Y-m-d', strtotime($taskManagement->verified_date_ad))));
             $taskManagement->achieved_point = $freshData['achieved_point'];
             $taskManagement->task_status = 'Verified';
             $taskManagement->response_from_supervisor = $freshData['response_from_supervisor'];
             $assignedMembers = DB::table('profiles')->whereIn('user_id', json_decode($taskManagement->assigned_to))->get();
-            
+
             foreach ($assignedMembers as $members) {
                 Mail::to($members->email)->send(new SendVerifiedMail($members, $taskManagement));
             }
@@ -295,14 +291,14 @@ class TaskManagement extends Model
             $sql = "SELECT *
                     FROM (
                     SELECT
-                        P.user_id, 
+                        P.user_id,
                         CONCAT(first_name, ' ', middle_name, ' ', last_name) AS staffname
                     FROM
                         profiles AS P
-                        JOIN user_roles AS UR ON UR.user_id = P.user_id 
+                        JOIN user_roles AS UR ON UR.user_id = P.user_id
                     WHERE
                         role_id = 3
-                        AND P.status = 'Y' 
+                        AND P.status = 'Y'
                         AND UR.status = 'Y'
                     ORDER BY
                         staffname ASC
@@ -325,9 +321,9 @@ class TaskManagement extends Model
                     WHERE PM.status = 'Y'
                     ) AS T ON S.user_id = T.assigned_to_array::int
                     ORDER BY staffname ASC";
-                        
+
             $result = DB::select($sql);
-            // dd($result);
+
             return $result;
         } catch (\Throwable $th) {
             throw $th;

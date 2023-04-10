@@ -101,7 +101,7 @@
                                 @else
                                     <a href="{{asset('storage/task-documents/'.$item)}}" target="_blank"><img src="{{asset('storage/task-documents/'.$item)}}" height="50px" width="50px" alt="Documents"></a>
                                 @endif
-                            @endforeach    
+                            @endforeach
                             </td>
                         </tr>
                         <tr>
