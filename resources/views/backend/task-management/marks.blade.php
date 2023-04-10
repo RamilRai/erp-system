@@ -9,9 +9,45 @@
         @csrf
         <div class="row">
             <input type="hidden" name="id" value="{{$currentTask->id}}">
+            <div class="form-group col-6">
+                <label class="form-label">Start Time:</label>
+                @php
+                    $startDate = \Carbon\Carbon::parse($currentTask->task_start_date_ad);
+                    $formattedStartDate = $startDate->format('F j, Y');
+                @endphp
+                <div>{{$formattedStartDate}}</div>
+            </div>
+            <div class="form-group col-6">
+                <label class="form-label">End Time:</label>
+                @php
+                    $endDate = \Carbon\Carbon::parse($currentTask->task_end_date_ad);
+                    $formattedEndDate = $endDate->format('F j, Y');
+                @endphp
+                <div>{{$formattedEndDate}}</div>
+            </div>
+            <div class="form-group col-6">
+                <label class="form-label">Started Time:</label>
+                @php
+                    $startedDate = \Carbon\Carbon::parse($currentTask->task_started_date_and_time_ad);
+                    $formattedStartedDate = $startedDate->format('F j, Y, g:i a');
+                @endphp
+                <div>{{$formattedStartedDate}}</div>
+            </div>
+            <div class="form-group col-6">
+                <label class="form-label">Completed Time:</label>
+                @php
+                    $completedDate = \Carbon\Carbon::parse($currentTask->task_completed_date_and_time_ad);
+                    $formattedCompletedDate = $completedDate->format('F j, Y, g:i a');
+                @endphp
+                <div>{{$formattedCompletedDate}}</div>
+            </div>
+            <div class="form-group col-6">
+                <label class="form-label">Task Completion Status:</label>
+                <div>{{$currentTask->completed_status}}</div>
+            </div>
             <div class="form-group col-12">
                 @if ($currentTask->feedback)
-                    <label class="form-label" for="achieved_point">Feedback/Remarks From Assigned Members:</label>
+                    <label class="form-label">Feedback/Remarks From Assigned Members:</label>
                     <p>{{$currentTask->feedback}}</p>
                 @endif
                 <label class="form-label" for="achieved_point">Achieved Points <code>*</code> (Task Point: {{$currentTask->task_point}})</label>

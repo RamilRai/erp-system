@@ -428,7 +428,7 @@ class TaskManagementController extends Controller
 
     public function taskManagementMarks(Request $request)
     {
-        $data['currentTask'] = TaskManagement::select('id', 'feedback', 'task_point')->where('id', $request->id)->first();
+        $data['currentTask'] = TaskManagement::select('id', 'feedback', 'task_point', 'task_start_date_ad', 'task_end_date_ad', 'task_started_date_and_time_ad', 'task_completed_date_and_time_ad', 'completed_status')->where('id', $request->id)->first();
         return view('backend.task-management.marks', $data);
     }
 

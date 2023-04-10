@@ -87,7 +87,7 @@ class TaskReportController extends Controller
                         }else{
                             // Nothing Here
                         }
-                       
+
                         $achievedPoints += !empty($values->achieved_point)?$values->achieved_point:0;
                     }
                 }
@@ -101,10 +101,10 @@ class TaskReportController extends Controller
                 $data['extrapoints'] = '-';
 
                 $staffResult[] = $data;
-                
+
             }
         }
-        
+
         $data = [
             'post' => $post,
             'report' => $staffResult,

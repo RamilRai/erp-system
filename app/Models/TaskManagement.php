@@ -50,7 +50,6 @@ class TaskManagement extends Model
     public static function storeData($post, $taskManagement, $request)
     {
         try {
-            // dd($request->assigned_to);
             $taskManagement->assigned_to = json_encode($post['assigned_to']);
             Arr::forget($post, 'assigned_to'); // to remove a given key value pair from an array
             $freshData = sanitizeData($post);
@@ -110,7 +109,7 @@ class TaskManagement extends Model
             }
 
             $members = Self::fetchMembers();
-            
+
             $memArray = [];
             foreach ($members as $row) {
                 $memArray[strtolower($row->fullname)] = $row->user_id;
@@ -307,12 +306,12 @@ class TaskManagement extends Model
                     SELECT
                         PM.project_name, TM.ticket_number, TM.task_title, TM.task_type, TM.task_start_date_bs,
                         TM.task_end_date_bs, TM.estimated_hour, TM.priority, assigned_to_array, TM.task_point,
-                        TM.task_status, TM.completed_status, TM.achieved_point
+                        TM.task_status, TM.task_started_date_and_time_ad, TM.task_completed_date_and_time_ad, TM.completed_status, TM.achieved_point
                     FROM (
                         SELECT
                         project_id, ticket_number, task_title, task_type, task_start_date_bs,
                         task_end_date_bs, estimated_hour, priority, assigned_to, task_point,
-                        task_status, completed_status, achieved_point,
+                        task_status, completed_status, achieved_point, task_started_date_and_time_ad, task_completed_date_and_time_ad,
                         json_array_elements_text(assigned_to::json) AS assigned_to_array
                         FROM task_management
                         WHERE status = 'Y' AND extract(month from task_start_date_bs) = ".$post['month']." AND extract(year from task_start_date_bs) = ".$post['year']."
