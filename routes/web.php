@@ -8,6 +8,7 @@ use App\Http\Controllers\CRM\CustomerController;
 use App\Http\Controllers\ProjectManagementController;
 use App\Http\Controllers\TaskManagementController;
 use App\Http\Controllers\TaskReportController;
+use App\Http\Controllers\ExtraTaskController;
 
 /*
 |--------------------------------------------------------------------------
@@ -154,6 +155,25 @@ Route::controller(TaskManagementController::class)->middleware(['auth'])->prefix
 Route::controller(TaskReportController::class)->middleware(['auth'])->prefix('admin/task-report')->group(function(){
     Route::get('/', 'index')->name('task-report.index');
     Route::any('/fetch-data', 'fetch')->name('task-report.fetch');
+});
+
+//===============================================================================================================================
+
+Route::controller(ExtraTaskController::class)->middleware(['auth'])->prefix('admin/extra-task')->group(function(){
+    Route::get('/', 'index')->name('extra-task.index');
+    Route::post('/create', 'extraTaskCreate')->name('extra-task.create');
+    Route::post('/ckeditor-fileupload', 'ckeditorFileUpload')->name('extraTask.ckeditor.fileupload');
+    Route::post('/submit', 'extraTaskSubmit')->name('extra-task.submit');
+    Route::get('/fetch', 'extraTaskFetch')->name('extra-task.fetch');
+    Route::post('/view', 'extraTaskView')->name('extra-task.view');
+    Route::post('/delete', 'extraTaskDelete')->name('extra-task.delete');
+    Route::post('/change-task-status', 'changeTaskStatus')->name('change.extra-task.status');
+    // if task completed
+    Route::post('/documents', 'extraTaskDocuments')->name('extra-task.documents');
+    Route::post('/documents-submit', 'extraTaskDocumentsSubmit')->name('extra-task-documents.submit');
+    // if task verified
+    Route::post('/marks', 'extraTaskMarks')->name('extra-task.marks');
+    Route::post('/marks-submit', 'extraTaskMarksSubmit')->name('extra-task-marks.submit');
 });
 
 //===============================================================================================================================

@@ -288,7 +288,6 @@
                     if(result.isConfirmed){
                         $.post(url,data,function(response){
                             var result = JSON.parse(response);
-                            console.log(result);
                             if(result.type == 'success' && result.response == false){
                                 Swal.fire({
                                     title: 'Changed!',

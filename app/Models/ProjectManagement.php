@@ -67,7 +67,7 @@ class ProjectManagement extends Model
 
             if(!empty($userID)){
                 $userJson = '"'.$userID.'"';
-                
+
                 /* the line of code for json format that supports in pgsql */
                 $cond .= " AND project_lead_by = ".$userID." OR assign_team_members::jsonb @> '[".$userJson."]' ";
                 /* the line of code for json format that supports in pgsql */
