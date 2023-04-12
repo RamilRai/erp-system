@@ -4,7 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
-use App\Models\{ExtraTask, Common, UserRole};
+use App\Models\{ExtraTask, Common, UserRole, TaskManagement};
 use App\Http\Requests\ExtraTaskRequest;
 use Illuminate\Database\QueryException;
 use App\Traits\ImageProcessTrait;
@@ -41,6 +41,8 @@ class ExtraTaskController extends Controller
         } else {
             $data['projects'] = DB::table('project_management')->select('id', 'project_name')->where('status', 'Y')->get();
         }
+
+        $data['members'] = TaskManagement::fetchMembers();
 
         return view('backend.extra-task.index', $data);
     }
@@ -135,6 +137,8 @@ class ExtraTaskController extends Controller
             $array[$i]["ticketNo"] = '#'.$row->ticket_no;
             $array[$i]["taskTitle"] = $row->task_title;
             $array[$i]["projectName"] = $row->project_name;
+            $img = '<img src="'.asset('storage/users-profile/'.$row->profile).'" alt="image" style="height:2rem; width:2rem; border-radius:50%;">';
+            $array[$i]["taskCreatedBy"] = $img . ' ' .$row->first_name;
             $array[$i]["taskType"] = $row->task_type;
             $status = '';
             if ($row->task_status == 'On Progress'){

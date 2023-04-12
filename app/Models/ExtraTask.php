@@ -89,12 +89,16 @@ class ExtraTask extends Model
             }
 
             if ($get['sSearch_3']) {
-                $taskType = strtolower(trim($get['sSearch_3']));
-                $cond .= " and lower(task_type) = '".addslashes($taskType)."'";
+                $cond .= " and created_by = ".$get['sSearch_3'];
             }
 
             if ($get['sSearch_4']) {
-                $taskStatus = strtolower(trim($get['sSearch_4']));
+                $taskType = strtolower(trim($get['sSearch_4']));
+                $cond .= " and lower(task_type) = '".addslashes($taskType)."'";
+            }
+
+            if ($get['sSearch_5']) {
+                $taskStatus = strtolower(trim($get['sSearch_5']));
                 $cond .= " and lower(task_status) = '".addslashes($taskStatus)."'";
             }
 
@@ -112,13 +116,19 @@ class ExtraTask extends Model
                         task_type,
                         task_status,
                         created_by,
-                        project_lead_by
+                        project_lead_by,
+                        first_name,
+                        profile
                     FROM
                         extra_tasks as ET
                     JOIN
                         project_management as PM
                     ON
                         ET.project_id = PM.id
+                    JOIN
+                        profiles as P
+                    ON
+                        ET.created_by = P.user_id
                     WHERE $cond
                     ORDER BY ET.id
                     DESC";

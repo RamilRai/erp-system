@@ -28,6 +28,7 @@
                                     <th class="whitespace-nowrap">Ticket No.</th>
                                     <th class="whitespace-nowrap">Task Title</th>
                                     <th class="whitespace-nowrap">Project Name</th>
+                                    <th class="whitespace-nowrap">Task Created By</th>
                                     <th class="whitespace-nowrap">Task Type</th>
                                     <th class="whitespace-nowrap">Task Status</th>
                                     <th class="whitespace-nowrap">Change Task Status</th>
@@ -60,6 +61,16 @@
 @section('main-scripts')
 
     <script>
+
+        //================== list members in searchable field of datatable start ==================
+        var membersArray = JSON.parse('{!! json_encode($members) !!}');
+        var updatedMembersArray = membersArray.map(obj => {
+                                return {
+                                    value: obj.user_id,
+                                    label: obj.fullname
+                                };
+                            });
+        //================== list members in searchable field of datatable end ==================
 
         //================== list projects in searchable field of datatable start ==================
         var projectArray = JSON.parse('{!! json_encode($projects) !!}') ;
@@ -115,12 +126,13 @@
                 "bSortable" : false,
                 "aTargets" : [0,]
             },
-            {"aTargets": [6,] }
+            {"aTargets": [7,] }
             ],
             "aoColumns" : [
                 {data:'ticketNo'},
                 {data:'taskTitle'},
                 {data:'projectName'},
+                {data:'taskCreatedBy'},
                 {data:'taskType'},
                 {data:'taskStatus'},
                 {data:'changeTaskStatus'},
@@ -138,6 +150,10 @@
                 {
                     type: "select",
                     values: updatedProjectsArray
+                },
+                {
+                    type: "select",
+                    values: updatedMembersArray
                 },
                 {
                     type: "select",
