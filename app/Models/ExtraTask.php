@@ -11,6 +11,7 @@ use App\Mail\ExtraTaskCompletedMail;
 use App\Mail\ExtraTaskCreatedMail;
 use App\Mail\ExtraTaskVerifiedMail;
 use Carbon\Carbon;
+use DB;
 
 class ExtraTask extends Model
 {
@@ -132,7 +133,7 @@ class ExtraTask extends Model
                     WHERE $cond
                     ORDER BY ET.id
                     DESC";
-
+            // echo $sql; exit;
             if ($limit > -1) {
                 $sql = $sql . ' limit ' . $limit . ' offset ' . $offset . '';
             }
@@ -205,6 +206,20 @@ class ExtraTask extends Model
             }
         } catch (Exception $e) {
             throw $e;
+        }
+    }
+
+    public static function getExtraReport($post)
+    {
+        try {
+            $result = ExtraTask::whereRaw("extract(year from task_created_date_bs) = ? ", $post['year'])
+                        ->whereRaw("extract(month from task_created_date_bs) = ? ", $post['month'])
+                        ->where('status', 'Y')
+                        ->get();
+
+            return $result;
+        } catch (\Throwable $th) {
+            throw $th;
         }
     }
 }

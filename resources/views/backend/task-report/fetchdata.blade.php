@@ -9,6 +9,8 @@
             <th scope="col">Not Started Task</th>
             <th scope="col">Hold / Cancelled Task</th>
             <th scope="col">Achieved Task Point</th>
+            <th scope="col">Achieved Extra Task Point</th>
+            <th scope="col">Achieved Total Point</th>
         </tr>
     </thead>
     <tbody>
@@ -23,6 +25,8 @@
                 <td>{{$item->notstartedTasks}}</td>
                 <td>{{$item->cancelHoldTasks}}</td>
                 <td>{{$item->achievedPoints}}</td>
+                <td>{{$item->extraPoints}}</td>
+                <td>{{$item->totalPoints}}</td>
             </tr>
         @endforeach
     </tbody>

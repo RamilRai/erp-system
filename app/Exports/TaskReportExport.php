@@ -11,17 +11,25 @@ class TaskReportExport implements WithMultipleSheets
     use Exportable;
 
     protected $dataArray;
-    
-    public function __construct(array $array)
+    protected $extraReportArray;
+
+    public function __construct(array $array, array $extraReportArray)
     {
         $this->dataArray = $array;
+        $this->extraReportArray = $extraReportArray;
     }
 
     public function sheets(): array
     {
         $sheets = [];
-        foreach ($this->dataArray as $key => $val) {
-            $sheets[] = new IndividualReportExport($val);
+        foreach ($this->dataArray as $val) {
+            if (!empty($val[0]->project_name)) {
+                $sheets[] = new IndividualReportExport($val);
+            }
+        }
+
+        foreach ($this->extraReportArray as $k => $v) {
+            $sheets[] = new IndividualExtraReportExport($v);
         }
         return $sheets;
     }

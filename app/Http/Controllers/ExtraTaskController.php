@@ -93,7 +93,7 @@ class ExtraTaskController extends Controller
 
             // generate ticket number
             if ($post['id'] == null) {
-                $countCurrentProjectTask = DB::table('extra_tasks')->where('status','Y')->count() + 1;
+                $countCurrentProjectTask = DB::table('extra_tasks')->count() + 1;
                 $ticketNumber = 'EXT-' . $countCurrentProjectTask;
                 $extraTask->ticket_no = $ticketNumber;
                 $extraTask->created_by = $userId;

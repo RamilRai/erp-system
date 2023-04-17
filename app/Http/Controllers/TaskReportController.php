@@ -5,10 +5,9 @@ namespace App\Http\Controllers;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use Illuminate\Support\Carbon;
-use App\Models\{Common, TaskManagement, UserRole};
-use Illuminate\Database\QueryException;
+use App\Models\{TaskManagement, UserRole, ExtraTask};
 use App\Exports\TaskReportExport;
-use DB, Exception, Auth, Excel, NepaliDate;
+use Auth, Excel, NepaliDate;
 
 class TaskReportController extends Controller
 {
@@ -48,16 +47,34 @@ class TaskReportController extends Controller
         $this->message = "Data fetched successfully.";
 
         $fetchReport = TaskManagement::getReport($post);
+        $fetchExtraTaskReport = ExtraTask::getExtraReport($post);
+
         $staffArray = [];
         $staffResult = [];
+        $extraReportArray = [];
         if (!empty($fetchReport)) {
             foreach ($fetchReport as $value) {
                 $staffArray[$value->user_id][] = $value;
             }
+
+            $staffExtraTaskArray = [];
+            foreach ($fetchExtraTaskReport as $val) {
+                $extraReportArray[$val->created_by][] = $val;
+            }
+
+            foreach ($extraReportArray as $k => $v) {
+                $extraPoints = 0;
+                foreach ($v as $vals) {
+                    $extraPoints += !empty($vals->achieved_point)?$vals->achieved_point:0;
+                }
+
+                $staffExtraTaskArray[$k] = $extraPoints;
+            }
+
             //====================================== for export to excel start ======================================
             if (!empty($request->isExport)) {
                 $fileName = 'StaffTaskReport'.'-'.$post['monthName'].'-'.$post['year'].'.xlsx';
-                return Excel::download(new TaskReportExport($staffArray), $fileName);
+                return Excel::download(new TaskReportExport($staffArray, $extraReportArray), $fileName);
             }
             //====================================== for export to excel end ======================================
 
@@ -72,6 +89,7 @@ class TaskReportController extends Controller
                 $cancelHoldTasks = 0;
                 $notstartedTasks = 0;
                 $achievedPoints = 0;
+                $extraPoints =  isset($staffExtraTaskArray[$key])?$staffExtraTaskArray[$key]:0;
                 foreach ($value as $values) {
                     if (!empty($values->ticket_number)) {
                         $assignedTasks++;
@@ -98,13 +116,14 @@ class TaskReportController extends Controller
                 $data['cancelHoldTasks'] = $cancelHoldTasks;
                 $data['notstartedTasks'] = $notstartedTasks;
                 $data['achievedPoints'] = $achievedPoints;
-                $data['extrapoints'] = '-';
+                $data['extraPoints'] = $extraPoints;
+                $data['totalPoints'] =  $achievedPoints + $extraPoints;
 
                 $staffResult[] = $data;
 
             }
         }
-
+        
         $data = [
             'post' => $post,
             'report' => $staffResult,
