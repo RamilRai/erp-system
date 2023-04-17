@@ -1,6 +1,6 @@
 <table class="table table-bordered" style="padding-top: 10px;" id="taskReportTable">
     <thead>
-        <tr>
+        <tr style="background: #5461f7; color: #fff">
             <th scope="col">S.No.</th>
             <th scope="col">Employee Name</th>
             <th scope="col">Assigned Task</th>
@@ -15,8 +15,14 @@
     </thead>
     <tbody>
         @foreach ($report as $item)
-        <?php $item = (object)$item; ?>
-            <tr>
+            <?php
+                $item = (object)$item;
+                $cssStyles = '';
+                if($loop->iteration % 2 == 0){
+                    $cssStyles = 'background: #e7e9ff; ';
+                }
+            ?>
+            <tr style="{{$cssStyles}}">
                 <th scope="row">{{$loop->iteration}}</th>
                 <td>{{$item->staffname}}</td>
                 <td>{{$item->assignedTasks}}</td>
